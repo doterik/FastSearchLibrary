@@ -5,128 +5,128 @@ using System.Linq;
 
 namespace FastSearchLibrary
 {
-    internal class FilePatternSearcher : FileSearcherBase
-    {
+	internal class FilePatternSearcher : FileSearcherBase
+	{
 
-        private string pattern;
+		private string pattern;
 
-        public FilePatternSearcher(string folder, string pattern, ExecuteHandlers handlerOption): base(folder, handlerOption)
-        {
-            this.pattern = pattern;
-        }
-        
+		public FilePatternSearcher(string folder, string pattern, ExecuteHandlers handlerOption): base(folder, handlerOption)
+		{
+			this.pattern = pattern;
+		}
+		
 
-        public FilePatternSearcher(string folder, string pattern): this(folder, pattern, ExecuteHandlers.InCurrentTask)
-        {
-        }
-
-
-        public FilePatternSearcher(string folder): this(folder, "*", ExecuteHandlers.InCurrentTask)
-        {
-        }
+		public FilePatternSearcher(string folder, string pattern): this(folder, pattern, ExecuteHandlers.InCurrentTask)
+		{
+		}
 
 
-
-        /// <summary>
-        /// Starts a file search operation with realtime reporting using several threads in thread pool.
-        /// </summary>
-        public override void StartSearch()
-        {
-             GetFilesFast();
-        }
+		public FilePatternSearcher(string folder): this(folder, "*", ExecuteHandlers.InCurrentTask)
+		{
+		}
 
 
 
-        protected override void GetFiles(string folder)
-        {
-            DirectoryInfo dirInfo = null;
-            DirectoryInfo[] directories = null;
-
-            try
-            {
-                dirInfo = new DirectoryInfo(folder);
-                directories = dirInfo.GetDirectories();
-
-                if (directories.Length == 0)
-                {
-                    var resFiles = dirInfo.GetFiles(pattern);
-                    if (resFiles.Length > 0)
-                        OnFilesFound(resFiles.ToList());
-                    return;
-                }
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                return;
-            }
-            catch (PathTooLongException ex)
-            {
-                return;
-            }
-            catch (DirectoryNotFoundException ex)
-            {
-                return;
-            }
-
-            foreach (var d in directories)
-            {
-                GetFiles(d.FullName);
-            }
-
-            try
-            {
-                var resFiles = dirInfo.GetFiles(pattern);
-                if (resFiles.Length > 0)
-                    OnFilesFound(resFiles.ToList());
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-            }
-            catch (PathTooLongException ex)
-            {
-            }
-            catch (DirectoryNotFoundException ex)
-            {
-            }
-        }
+		/// <summary>
+		/// Starts a file search operation with realtime reporting using several threads in thread pool.
+		/// </summary>
+		public override void StartSearch()
+		{
+			 GetFilesFast();
+		}
 
 
 
-        protected override List<DirectoryInfo> GetStartDirectories(string folder)
-        {
-            DirectoryInfo dirInfo = null;
-            DirectoryInfo[] directories = null;
-            try
-            {
-                dirInfo = new DirectoryInfo(folder);
-                directories = dirInfo.GetDirectories();
+		protected override void GetFiles(string folder)
+		{
+			DirectoryInfo dirInfo = null;
+			DirectoryInfo[] directories = null;
 
-                var resFiles = dirInfo.GetFiles(pattern);
-                if (resFiles.Length > 0)
-                    OnFilesFound(resFiles.ToList());
+			try
+			{
+				dirInfo = new DirectoryInfo(folder);
+				directories = dirInfo.GetDirectories();
 
-                if (directories.Length > 1)
-                    return new List<DirectoryInfo>(directories);
+				if (directories.Length == 0)
+				{
+					var resFiles = dirInfo.GetFiles(pattern);
+					if (resFiles.Length > 0)
+						OnFilesFound(resFiles.ToList());
+					return;
+				}
+			}
+			catch (UnauthorizedAccessException)
+			{
+				return;
+			}
+			catch (PathTooLongException)
+			{
+				return;
+			}
+			catch (DirectoryNotFoundException)
+			{
+				return;
+			}
 
-                if (directories.Length == 0)
-                    return new List<DirectoryInfo>();
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                return new List<DirectoryInfo>();
-            }
-            catch (PathTooLongException ex)
-            {
-                return new List<DirectoryInfo>();
-            }
-            catch (DirectoryNotFoundException ex)
-            {
-                return new List<DirectoryInfo>();
-            }
+			foreach (var d in directories)
+			{
+				GetFiles(d.FullName);
+			}
 
-            return GetStartDirectories(directories[0].FullName);
-        }
+			try
+			{
+				var resFiles = dirInfo.GetFiles(pattern);
+				if (resFiles.Length > 0)
+					OnFilesFound(resFiles.ToList());
+			}
+			catch (UnauthorizedAccessException)
+			{
+			}
+			catch (PathTooLongException)
+			{
+			}
+			catch (DirectoryNotFoundException)
+			{
+			}
+		}
 
 
-    }
+
+		protected override List<DirectoryInfo> GetStartDirectories(string folder)
+		{
+			DirectoryInfo dirInfo = null;
+			DirectoryInfo[] directories = null;
+			try
+			{
+				dirInfo = new DirectoryInfo(folder);
+				directories = dirInfo.GetDirectories();
+
+				var resFiles = dirInfo.GetFiles(pattern);
+				if (resFiles.Length > 0)
+					OnFilesFound(resFiles.ToList());
+
+				if (directories.Length > 1)
+					return new List<DirectoryInfo>(directories);
+
+				if (directories.Length == 0)
+					return new List<DirectoryInfo>();
+			}
+			catch (UnauthorizedAccessException)
+			{
+				return new List<DirectoryInfo>();
+			}
+			catch (PathTooLongException)
+			{
+				return new List<DirectoryInfo>();
+			}
+			catch (DirectoryNotFoundException)
+			{
+				return new List<DirectoryInfo>();
+			}
+
+			return GetStartDirectories(directories[0].FullName);
+		}
+
+
+	}
 }

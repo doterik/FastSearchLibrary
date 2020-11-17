@@ -5,132 +5,132 @@ using System.Threading;
 
 namespace FastSearchLibrary
 {
-    internal class DirectoryCancellationDelegateSearcher : DirectoryCancellationSearcherBase
-    {
+	internal class DirectoryCancellationDelegateSearcher : DirectoryCancellationSearcherBase
+	{
 
-        private Func<DirectoryInfo, bool> isValid;
+		private Func<DirectoryInfo, bool> isValid;
 
-        public DirectoryCancellationDelegateSearcher(string folder, Func<DirectoryInfo, bool> isValid, CancellationToken token, ExecuteHandlers handlerOption, bool suppressOperationCanceledException)
-            :base(folder, token, handlerOption, suppressOperationCanceledException)
-        {
-            this.isValid = isValid;
-        }
+		public DirectoryCancellationDelegateSearcher(string folder, Func<DirectoryInfo, bool> isValid, CancellationToken token, ExecuteHandlers handlerOption, bool suppressOperationCanceledException)
+			:base(folder, token, handlerOption, suppressOperationCanceledException)
+		{
+			this.isValid = isValid;
+		}
 
-        protected override void GetDirectories(string folder)
-        {
-            token.ThrowIfCancellationRequested();
+		protected override void GetDirectories(string folder)
+		{
+			token.ThrowIfCancellationRequested();
 
-            DirectoryInfo dirInfo = null;
-            DirectoryInfo[] directories = null;
+			DirectoryInfo dirInfo = null;
+			DirectoryInfo[] directories = null;
 
-            try
-            {
-                dirInfo = new DirectoryInfo(folder);
-                directories = dirInfo.GetDirectories();
+			try
+			{
+				dirInfo = new DirectoryInfo(folder);
+				directories = dirInfo.GetDirectories();
 
-                if (directories.Length == 0) return;
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                return;
-            }
-            catch (PathTooLongException ex)
-            {
-                return;
-            }
-            catch (DirectoryNotFoundException ex)
-            {
-                return;
-            }
+				if (directories.Length == 0) return;
+			}
+			catch (UnauthorizedAccessException)
+			{
+				return;
+			}
+			catch (PathTooLongException)
+			{
+				return;
+			}
+			catch (DirectoryNotFoundException)
+			{
+				return;
+			}
 
 
-            foreach (var dir in directories)
-            {
-                token.ThrowIfCancellationRequested();
+			foreach (var dir in directories)
+			{
+				token.ThrowIfCancellationRequested();
 
-                GetDirectories(dir.FullName);
-            }
+				GetDirectories(dir.FullName);
+			}
 
-            token.ThrowIfCancellationRequested();
+			token.ThrowIfCancellationRequested();
 
-            try
-            {
-                List<DirectoryInfo> resultDirs = new List<DirectoryInfo>();
+			try
+			{
+				List<DirectoryInfo> resultDirs = new List<DirectoryInfo>();
 
-                foreach (var dir in directories)
-                {
-                    if (isValid(dir))
-                        resultDirs.Add(dir);
-                }
+				foreach (var dir in directories)
+				{
+					if (isValid(dir))
+						resultDirs.Add(dir);
+				}
 
-                if (resultDirs.Count > 0)
-                    OnDirectoriesFound(resultDirs);
+				if (resultDirs.Count > 0)
+					OnDirectoriesFound(resultDirs);
 
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-            }
-            catch (PathTooLongException ex)
-            {
-            }
-            catch (DirectoryNotFoundException ex)
-            {
-            }
-        }
+			}
+			catch (UnauthorizedAccessException)
+			{
+			}
+			catch (PathTooLongException)
+			{
+			}
+			catch (DirectoryNotFoundException)
+			{
+			}
+		}
 
-        protected override List<DirectoryInfo> GetStartDirectories(string folder)
-        {
-            token.ThrowIfCancellationRequested();
+		protected override List<DirectoryInfo> GetStartDirectories(string folder)
+		{
+			token.ThrowIfCancellationRequested();
 
-            DirectoryInfo dirInfo = null;
-            DirectoryInfo[] directories = null;
-            List<DirectoryInfo> resultDirs = new List<DirectoryInfo>();
+			DirectoryInfo dirInfo = null;
+			DirectoryInfo[] directories = null;
+			List<DirectoryInfo> resultDirs = new List<DirectoryInfo>();
 
-            try
-            {
-                dirInfo = new DirectoryInfo(folder);
-                directories = dirInfo.GetDirectories();
+			try
+			{
+				dirInfo = new DirectoryInfo(folder);
+				directories = dirInfo.GetDirectories();
 
-                if (directories.Length > 1)
-                {
+				if (directories.Length > 1)
+				{
 
-                    foreach (var dir in directories)
-                    {
-                        if (isValid(dir))
-                            resultDirs.Add(dir); 
-                    }
+					foreach (var dir in directories)
+					{
+						if (isValid(dir))
+							resultDirs.Add(dir); 
+					}
 
-                    if (resultDirs.Count > 0)
-                        OnDirectoriesFound(resultDirs);
+					if (resultDirs.Count > 0)
+						OnDirectoriesFound(resultDirs);
 
-                    return new List<DirectoryInfo>(directories);
-                }
+					return new List<DirectoryInfo>(directories);
+				}
 
-                if (directories.Length == 0)
-                    return new List<DirectoryInfo>();
+				if (directories.Length == 0)
+					return new List<DirectoryInfo>();
 
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                return new List<DirectoryInfo>();
-            }
-            catch (PathTooLongException ex)
-            {
-                return new List<DirectoryInfo>();
-            }
-            catch (DirectoryNotFoundException ex)
-            {
-                return new List<DirectoryInfo>();
-            }
+			}
+			catch (UnauthorizedAccessException)
+			{
+				return new List<DirectoryInfo>();
+			}
+			catch (PathTooLongException)
+			{
+				return new List<DirectoryInfo>();
+			}
+			catch (DirectoryNotFoundException)
+			{
+				return new List<DirectoryInfo>();
+			}
 
-            // if directories.Length == 1
-            foreach (var dir in directories)
-            {
-                if (isValid(dir))
-                    OnDirectoriesFound(new List<DirectoryInfo> { dir });
-            }
+			// if directories.Length == 1
+			foreach (var dir in directories)
+			{
+				if (isValid(dir))
+					OnDirectoriesFound(new List<DirectoryInfo> { dir });
+			}
 
-            return GetStartDirectories(directories[0].FullName);
-        }
-    }
+			return GetStartDirectories(directories[0].FullName);
+		}
+	}
 }
