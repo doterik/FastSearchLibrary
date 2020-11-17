@@ -201,7 +201,7 @@ namespace FastSearchLibrary
 
 
 		#region Checking methods
-		private void CheckFolders(List<string> folders)
+		private static void CheckFolders(List<string> folders)
 		{
 			if (folders == null)
 				throw new ArgumentNullException(nameof(folders), "Argument is null.");
@@ -214,7 +214,7 @@ namespace FastSearchLibrary
 		}
 
 
-		private void CheckFolder(string folder)
+		private static void CheckFolder(string folder)
 		{
 			if (folder == null)
 				throw new ArgumentNullException(nameof(folder), "Argument is null.");
@@ -229,7 +229,7 @@ namespace FastSearchLibrary
 		}
 
 
-		private void CheckPattern(string pattern)
+		private static void CheckPattern(string pattern)
 		{
 			if (pattern == null)
 				throw new ArgumentNullException(nameof(pattern), "Argument is null.");
@@ -239,14 +239,14 @@ namespace FastSearchLibrary
 		}
 
 
-		private void CheckDelegate(Func<FileInfo, bool> isValid)
+		private static void CheckDelegate(Func<FileInfo, bool> isValid)
 		{
 			if (isValid == null)
 				throw new ArgumentNullException(nameof(isValid), "Argument is null.");
 		}
 
 
-		private void CheckTokenSource(CancellationTokenSource tokenSource)
+		private static void CheckTokenSource(CancellationTokenSource tokenSource)
 		{
 			if (tokenSource == null)
 				throw new ArgumentNullException(nameof(tokenSource), "Argument is null.");
