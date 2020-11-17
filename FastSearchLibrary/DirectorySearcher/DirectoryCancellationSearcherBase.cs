@@ -14,7 +14,7 @@ namespace FastSearchLibrary
 		/// <summary>
 		/// Determines where execute event DirectoriesFound handlers
 		/// </summary>
-		protected ExecuteHandlers handlerOption { get; set; }
+		protected ExecuteHandlers HandlerOption { get; set; }
 
 		private readonly string folder;
 
@@ -28,7 +28,7 @@ namespace FastSearchLibrary
 		{
 			this.folder = folder;
 			this.token = token;
-			this.handlerOption = handlerOption;
+			this.HandlerOption = handlerOption;
 			this.SuppressOperationCanceledException = suppressOperationCanceledException;
 			taskHandlers = new ConcurrentBag<Task>();
 		}
@@ -47,7 +47,7 @@ namespace FastSearchLibrary
 			{
 				var arg = new DirectoryEventArgs(directories);
 
-				if (handlerOption == ExecuteHandlers.InNewTask)
+				if (HandlerOption == ExecuteHandlers.InNewTask)
 					taskHandlers.Add(Task.Run(() => DirectoriesFound(this, arg), token));
 				else
 					handler(this, arg);
@@ -61,7 +61,7 @@ namespace FastSearchLibrary
 
 			if (handler != null)
 			{
-				if (handlerOption == ExecuteHandlers.InNewTask)
+				if (HandlerOption == ExecuteHandlers.InNewTask)
 				{
 					try
 					{
