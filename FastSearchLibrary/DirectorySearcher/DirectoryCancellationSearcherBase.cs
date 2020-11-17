@@ -1,4 +1,7 @@
-﻿using System;
+﻿#pragma warning disable IDE0003 // Remove qualification
+#pragma warning disable IDE0007 // Use implicit type
+
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
@@ -108,7 +111,7 @@ namespace FastSearchLibrary
 		}
 
 
-	
+
 		protected virtual void GetDirectoriesFast()
 		{
 			List<DirectoryInfo> startDirs = GetStartDirectories(folder);

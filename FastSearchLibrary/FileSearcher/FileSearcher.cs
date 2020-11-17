@@ -1,4 +1,7 @@
-﻿using System;
+﻿#pragma warning disable IDE0007 // Use implicit type
+#pragma warning disable IDE0022 // Use expression body for methods
+
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
@@ -27,7 +30,7 @@ namespace FastSearchLibrary
 		{
 			add
 			{
-				searcher.FilesFound += value; 
+				searcher.FilesFound += value;
 			}
 
 			remove
@@ -69,7 +72,7 @@ namespace FastSearchLibrary
 			CheckFolder(folder);
 
 			CheckPattern(pattern);
-			
+
 			searcher = new FilePatternSearcher(folder, pattern, handlerOption);
 		}
 
@@ -183,7 +186,7 @@ namespace FastSearchLibrary
 		/// <param name="tokenSource">Instance of CancellationTokenSource for search process cancellation possibility.</param>
 		/// <exception cref="ArgumentException"></exception>
 		/// <exception cref="ArgumentNullException"></exception>
-		public FileSearcher(string folder, string pattern, CancellationTokenSource tokenSource) 
+		public FileSearcher(string folder, string pattern, CancellationTokenSource tokenSource)
 			: this(folder, pattern, tokenSource, ExecuteHandlers.InCurrentTask, true)
 		{
 		}
@@ -196,7 +199,7 @@ namespace FastSearchLibrary
 		/// <param name="tokenSource">Instance of CancellationTokenSource for search process cancellation possibility.</param>
 		/// <exception cref="ArgumentException"></exception>
 		/// <exception cref="ArgumentNullException"></exception>
-		public FileSearcher(string folder, CancellationTokenSource tokenSource) 
+		public FileSearcher(string folder, CancellationTokenSource tokenSource)
 			: this(folder, "*", tokenSource, ExecuteHandlers.InCurrentTask, true)
 		{
 		}
@@ -240,7 +243,7 @@ namespace FastSearchLibrary
 		/// <exception cref="ArgumentNullException"></exception>
 		public FileSearcher(string folder, Func<FileInfo, bool> isValid, CancellationTokenSource tokenSource, ExecuteHandlers handlerOption)
 			: this(folder, isValid, tokenSource, handlerOption, true)
-		{ 
+		{
 		}
 
 
@@ -266,11 +269,11 @@ namespace FastSearchLibrary
 		{
 			if (folder == null)
 				throw new ArgumentNullException(nameof(folder), "Argument is null.");
-			  
+
 			if (folder == string.Empty)
 				throw new ArgumentException("Argument is not valid.", nameof(folder));
 
-			DirectoryInfo dir = new DirectoryInfo(folder);
+			var dir = new DirectoryInfo(folder);
 
 			if (!dir.Exists)
 				throw new ArgumentException("Argument does not represent an existing directory.", nameof(folder));
@@ -299,7 +302,7 @@ namespace FastSearchLibrary
 			if (tokenSource == null)
 				throw new ArgumentNullException(nameof(tokenSource), "Argument is null.");
 		}
- 
+
 
 		#endregion
 
@@ -322,8 +325,8 @@ namespace FastSearchLibrary
 			{
 				return Task.Run(() =>
 				{
-				   StartSearch();
-					
+					StartSearch();
+
 				}, tokenSource.Token);
 			}
 
@@ -383,7 +386,7 @@ namespace FastSearchLibrary
 				return new List<FileInfo>();
 			}
 
-			List<FileInfo> result = new List<FileInfo>();
+			var result = new List<FileInfo>();
 
 			foreach (var d in directories)
 			{
@@ -421,7 +424,7 @@ namespace FastSearchLibrary
 		{
 			DirectoryInfo dirInfo;
 			DirectoryInfo[] directories;
-			List<FileInfo> resultFiles = new List<FileInfo>();
+			var resultFiles = new List<FileInfo>();
 			try
 			{
 				dirInfo = new DirectoryInfo(folder);
@@ -523,7 +526,7 @@ namespace FastSearchLibrary
 		/// <exception cref="ArgumentNullException"></exception>
 		static public List<FileInfo> GetFilesFast(string folder, string pattern = "*")
 		{
-			ConcurrentBag<FileInfo> files = new ConcurrentBag<FileInfo>();
+			var files = new ConcurrentBag<FileInfo>();
 
 			List<DirectoryInfo> startDirs = GetStartDirectories(folder, files, pattern);
 
@@ -550,7 +553,7 @@ namespace FastSearchLibrary
 		/// <exception cref="ArgumentNullException"></exception>
 		static public List<FileInfo> GetFilesFast(string folder, Func<FileInfo, bool> isValid)
 		{
-			ConcurrentBag<FileInfo> files = new ConcurrentBag<FileInfo>();
+			var files = new ConcurrentBag<FileInfo>();
 
 			List<DirectoryInfo> startDirs = GetStartDirectories(folder, files, isValid);
 

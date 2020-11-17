@@ -1,4 +1,6 @@
-﻿using System;
+﻿#pragma warning disable IDE0021 // Use expression body for constructors
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
@@ -19,7 +21,7 @@ namespace FastSearchLibrary
 		protected override void GetDirectories(string folder)
 		{
 			token.ThrowIfCancellationRequested();
-						
+
 			DirectoryInfo[] directories;
 
 			try
@@ -54,7 +56,7 @@ namespace FastSearchLibrary
 
 			try
 			{
-				List<DirectoryInfo> resultDirs = new List<DirectoryInfo>();
+				var resultDirs = new List<DirectoryInfo>();
 
 				foreach (var dir in directories)
 				{
@@ -82,7 +84,7 @@ namespace FastSearchLibrary
 			token.ThrowIfCancellationRequested();
 
 			DirectoryInfo[] directories;
-			List<DirectoryInfo> resultDirs = new List<DirectoryInfo>();
+			var resultDirs = new List<DirectoryInfo>();
 			try
 			{
 				var dirInfo = new DirectoryInfo(folder);

@@ -1,4 +1,7 @@
-﻿using System;
+﻿#pragma warning disable IDE0021 // Use expression body for constructors
+#pragma warning disable IDE0022 // Use expression body for methods
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -10,18 +13,18 @@ namespace FastSearchLibrary
 
 		private readonly string pattern;
 
-		public FilePatternSearcher(string folder, string pattern, ExecuteHandlers handlerOption): base(folder, handlerOption)
+		public FilePatternSearcher(string folder, string pattern, ExecuteHandlers handlerOption) : base(folder, handlerOption)
 		{
 			this.pattern = pattern;
 		}
-		
 
-		public FilePatternSearcher(string folder, string pattern): this(folder, pattern, ExecuteHandlers.InCurrentTask)
+
+		public FilePatternSearcher(string folder, string pattern) : this(folder, pattern, ExecuteHandlers.InCurrentTask)
 		{
 		}
 
 
-		public FilePatternSearcher(string folder): this(folder, "*", ExecuteHandlers.InCurrentTask)
+		public FilePatternSearcher(string folder) : this(folder, "*", ExecuteHandlers.InCurrentTask)
 		{
 		}
 
@@ -32,7 +35,7 @@ namespace FastSearchLibrary
 		/// </summary>
 		public override void StartSearch()
 		{
-			 GetFilesFast();
+			GetFilesFast();
 		}
 
 

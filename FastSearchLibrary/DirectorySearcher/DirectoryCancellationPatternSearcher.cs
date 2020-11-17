@@ -1,4 +1,6 @@
-﻿using System;
+﻿#pragma warning disable IDE0021 // Use expression body for constructors
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;

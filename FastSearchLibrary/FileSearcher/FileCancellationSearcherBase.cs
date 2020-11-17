@@ -1,4 +1,7 @@
-﻿using System;
+﻿#pragma warning disable IDE0003 // Remove qualification
+#pragma warning disable IDE0007 // Use implicit type
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -46,7 +49,7 @@ namespace FastSearchLibrary
 		{
 			var arg = new FileEventArgs(files);
 
-			if (handlerOption == ExecuteHandlers.InNewTask)
+			if (HandlerOption == ExecuteHandlers.InNewTask)
 				taskHandlers.Add(Task.Run(() => CallFilesFound(files), token));
 			else
 				CallFilesFound(files);
@@ -55,7 +58,7 @@ namespace FastSearchLibrary
 
 		protected override void OnSearchCompleted(bool isCanceled)
 		{
-			if (handlerOption == ExecuteHandlers.InNewTask)
+			if (HandlerOption == ExecuteHandlers.InNewTask)
 			{
 				try
 				{

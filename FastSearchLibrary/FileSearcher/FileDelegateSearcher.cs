@@ -1,26 +1,30 @@
-﻿using System;
+﻿#pragma warning disable IDE0007 // Use implicit type
+#pragma warning disable IDE0021 // Use expression body for constructors
+#pragma warning disable IDE0022 // Use expression body for methods
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 
 namespace FastSearchLibrary
 {
-	internal class FileDelegateSearcher: FileSearcherBase
+	internal class FileDelegateSearcher : FileSearcherBase
 	{
 
 		private readonly Func<FileInfo, bool> isValid = null;
 
-		public FileDelegateSearcher(string folder, Func<FileInfo, bool> isValid, ExecuteHandlers handlerOption): base(folder, handlerOption)
+		public FileDelegateSearcher(string folder, Func<FileInfo, bool> isValid, ExecuteHandlers handlerOption) : base(folder, handlerOption)
 		{
 			this.isValid = isValid;
 		}
 
 
-		public FileDelegateSearcher(string folder, Func<FileInfo, bool> isValid): this(folder, isValid, ExecuteHandlers.InCurrentTask)
+		public FileDelegateSearcher(string folder, Func<FileInfo, bool> isValid) : this(folder, isValid, ExecuteHandlers.InCurrentTask)
 		{
 		}
 
 
-		public FileDelegateSearcher(string folder): this(folder, (arg) => true, ExecuteHandlers.InCurrentTask)
+		public FileDelegateSearcher(string folder) : this(folder, (arg) => true, ExecuteHandlers.InCurrentTask)
 		{
 		}
 
@@ -40,7 +44,7 @@ namespace FastSearchLibrary
 		{
 			DirectoryInfo[] directories;
 			DirectoryInfo dirInfo;
-			List<FileInfo> resultFiles = new List<FileInfo>();
+			var resultFiles = new List<FileInfo>();
 			try
 			{
 				dirInfo = new DirectoryInfo(folder);
@@ -105,7 +109,7 @@ namespace FastSearchLibrary
 		{
 			DirectoryInfo[] directories;
 
-			List<FileInfo> resultFiles = new List<FileInfo>();
+			var resultFiles = new List<FileInfo>();
 			try
 			{
 				var dirInfo = new DirectoryInfo(folder);

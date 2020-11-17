@@ -1,4 +1,9 @@
-﻿using System;
+﻿#pragma warning disable IDE0007 // Use implicit type
+#pragma warning disable IDE0021 // Use expression body for constructors
+#pragma warning disable IDE0022 // Use expression body for methods
+#pragma warning disable IDE0052 // Remove unread private members
+
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
@@ -19,6 +24,7 @@ namespace FastSearchLibrary
 		private readonly DirectoryCancellationSearcherBase searcher;
 
 		private readonly CancellationTokenSource tokenSource;
+		private readonly ExecuteHandlers handlerOption;
 
 
 		/// <summary>
@@ -90,7 +96,7 @@ namespace FastSearchLibrary
 		/// <exception cref="ArgumentException"></exception>
 		/// <exception cref="ArgumentNullException"></exception>
 		public DirectorySearcher(string folder, string pattern, CancellationTokenSource tokenSource, ExecuteHandlers handlerOption)
-			: this (folder, pattern, tokenSource, handlerOption, true)
+			: this(folder, pattern, tokenSource, handlerOption, true)
 		{
 		}
 
@@ -104,7 +110,7 @@ namespace FastSearchLibrary
 		/// <exception cref="ArgumentException"></exception>
 		/// <exception cref="ArgumentNullException"></exception>
 		public DirectorySearcher(string folder, string pattern, CancellationTokenSource tokenSource)
-			: this (folder, pattern, tokenSource, ExecuteHandlers.InCurrentTask, true)
+			: this(folder, pattern, tokenSource, ExecuteHandlers.InCurrentTask, true)
 		{
 		}
 
@@ -117,7 +123,7 @@ namespace FastSearchLibrary
 		/// <exception cref="ArgumentException"></exception>
 		/// <exception cref="ArgumentNullException"></exception>
 		public DirectorySearcher(string folder, CancellationTokenSource tokenSource)
-			: this (folder, "*", tokenSource, ExecuteHandlers.InCurrentTask, true)
+			: this(folder, "*", tokenSource, ExecuteHandlers.InCurrentTask, true)
 		{
 
 		}
@@ -162,6 +168,7 @@ namespace FastSearchLibrary
 		public DirectorySearcher(string folder, Func<DirectoryInfo, bool> isValid, CancellationTokenSource tokenSource, ExecuteHandlers handlerOption)
 			: this(folder, isValid, tokenSource, ExecuteHandlers.InCurrentTask, true)
 		{
+			this.handlerOption = handlerOption;
 		}
 
 
@@ -192,7 +199,7 @@ namespace FastSearchLibrary
 			if (folder == string.Empty)
 				throw new ArgumentException("Argument is not valid.", nameof(folder));
 
-			DirectoryInfo dir = new DirectoryInfo(folder);
+			var dir = new DirectoryInfo(folder);
 
 			if (!dir.Exists)
 				throw new ArgumentException("Argument does not represent an existing directory.", nameof(folder));
@@ -273,7 +280,7 @@ namespace FastSearchLibrary
 		/// <exception cref="NotSupportedException"></exception>
 		static public List<DirectoryInfo> GetDirectories(string folder, string pattern = "*")
 		{
-			List<DirectoryInfo> directories = new List<DirectoryInfo>();
+			var directories = new List<DirectoryInfo>();
 			GetDirectories(folder, directories, pattern);
 
 			return directories;
@@ -293,7 +300,7 @@ namespace FastSearchLibrary
 		/// <exception cref="NotSupportedException"></exception>
 		static public List<DirectoryInfo> GetDirectories(string folder, Func<DirectoryInfo, bool> isValid)
 		{
-			List<DirectoryInfo> directories = new List<DirectoryInfo>();
+			var directories = new List<DirectoryInfo>();
 			GetDirectories(folder, directories, isValid);
 
 			return directories;
@@ -351,7 +358,7 @@ namespace FastSearchLibrary
 		/// <exception cref="NotSupportedException"></exception>
 		static public List<DirectoryInfo> GetDirectoriesFast(string folder, string pattern = "*")
 		{
-			ConcurrentBag<DirectoryInfo> dirs = new ConcurrentBag<DirectoryInfo>();
+			var dirs = new ConcurrentBag<DirectoryInfo>();
 
 			List<DirectoryInfo> startDirs = GetStartDirectories(folder, dirs, pattern);
 
@@ -380,7 +387,7 @@ namespace FastSearchLibrary
 		/// <exception cref="NotSupportedException"></exception>
 		static public List<DirectoryInfo> GetDirectoriesFast(string folder, Func<DirectoryInfo, bool> isValid)
 		{
-			ConcurrentBag<DirectoryInfo> dirs = new ConcurrentBag<DirectoryInfo>();
+			var dirs = new ConcurrentBag<DirectoryInfo>();
 
 			List<DirectoryInfo> startDirs = GetStartDirectories(folder, dirs, isValid);
 

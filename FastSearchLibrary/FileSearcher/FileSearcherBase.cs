@@ -1,4 +1,7 @@
-﻿using System;
+﻿#pragma warning disable IDE0003 // Remove qualification
+#pragma warning disable IDE0007 // Use implicit type
+
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
@@ -7,102 +10,102 @@ using System.Threading.Tasks;
 
 namespace FastSearchLibrary
 {
-    internal abstract class FileSearcherBase
-    {
-        /// <summary>
-        /// Specifies where FilesFound event handlers are executed.
-        /// </summary>
-        protected ExecuteHandlers handlerOption { get; set; }
+	internal abstract class FileSearcherBase
+	{
+		/// <summary>
+		/// Specifies where FilesFound event handlers are executed.
+		/// </summary>
+		protected ExecuteHandlers HandlerOption { get; set; }
 
-        protected string folder;
+		protected string folder;
 
-        protected ConcurrentBag<Task> taskHandlers;
-
-
-        public FileSearcherBase(string folder, ExecuteHandlers handlerOption)
-        {
-            this.folder = folder;
-            this.handlerOption = handlerOption;
-            taskHandlers = new ConcurrentBag<Task>();
-        }
+		protected ConcurrentBag<Task> taskHandlers;
 
 
-        public event EventHandler<FileEventArgs> FilesFound;
-
-        public event EventHandler<SearchCompletedEventArgs> SearchCompleted;
-
-
-        protected virtual void GetFilesFast()
-        {
-            List<DirectoryInfo> startDirs = GetStartDirectories(folder);
-
-            startDirs.AsParallel().ForAll((d) =>
-            {
-                GetStartDirectories(d.FullName).AsParallel().ForAll((dir) =>
-                {
-                    GetFiles(dir.FullName);
-                });
-            });
-
-            OnSearchCompleted(false);
-        }
+		public FileSearcherBase(string folder, ExecuteHandlers handlerOption)
+		{
+			this.folder = folder;
+			this.HandlerOption = handlerOption;
+			taskHandlers = new ConcurrentBag<Task>();
+		}
 
 
-        protected virtual void OnFilesFound(List<FileInfo> files)
-        {
-            if (handlerOption == ExecuteHandlers.InNewTask)
-            {
-                taskHandlers.Add(Task.Run(() => CallFilesFound(files)));
-            }
-            else
-            {
-                CallFilesFound(files);
-            }
-        }
+		public event EventHandler<FileEventArgs> FilesFound;
+
+		public event EventHandler<SearchCompletedEventArgs> SearchCompleted;
 
 
-        protected virtual void CallFilesFound(List<FileInfo> files)
-        {
-            EventHandler<FileEventArgs> handler = FilesFound;
+		protected virtual void GetFilesFast()
+		{
+			List<DirectoryInfo> startDirs = GetStartDirectories(folder);
 
-            if (handler != null)
-            {
-                var arg = new FileEventArgs(files);
-                handler(this, arg);
-            }
-        }
+			startDirs.AsParallel().ForAll((d) =>
+			{
+				GetStartDirectories(d.FullName).AsParallel().ForAll((dir) =>
+				{
+					GetFiles(dir.FullName);
+				});
+			});
 
-
-        protected virtual void OnSearchCompleted(bool isCanceled)
-        {
-            if (handlerOption == ExecuteHandlers.InNewTask)
-            {
-                 Task.WaitAll(taskHandlers.ToArray());   
-            }
-
-            CallSearchCompleted(isCanceled);
-        }
+			OnSearchCompleted(false);
+		}
 
 
-        protected virtual void CallSearchCompleted(bool isCanceled)
-        {
-            EventHandler<SearchCompletedEventArgs> handler = SearchCompleted;
-
-            if (handler != null)
-            {
-                var arg = new SearchCompletedEventArgs(isCanceled);
-
-                handler(this, arg);
-            }
-        }
-
-
-        protected abstract void GetFiles(string folder);
+		protected virtual void OnFilesFound(List<FileInfo> files)
+		{
+			if (HandlerOption == ExecuteHandlers.InNewTask)
+			{
+				taskHandlers.Add(Task.Run(() => CallFilesFound(files)));
+			}
+			else
+			{
+				CallFilesFound(files);
+			}
+		}
 
 
-        protected abstract List<DirectoryInfo> GetStartDirectories(string folder);
+		protected virtual void CallFilesFound(List<FileInfo> files)
+		{
+			EventHandler<FileEventArgs> handler = FilesFound;
+
+			if (handler != null)
+			{
+				var arg = new FileEventArgs(files);
+				handler(this, arg);
+			}
+		}
 
 
-        public abstract void StartSearch();
-    }
+		protected virtual void OnSearchCompleted(bool isCanceled)
+		{
+			if (HandlerOption == ExecuteHandlers.InNewTask)
+			{
+				Task.WaitAll(taskHandlers.ToArray());
+			}
+
+			CallSearchCompleted(isCanceled);
+		}
+
+
+		protected virtual void CallSearchCompleted(bool isCanceled)
+		{
+			EventHandler<SearchCompletedEventArgs> handler = SearchCompleted;
+
+			if (handler != null)
+			{
+				var arg = new SearchCompletedEventArgs(isCanceled);
+
+				handler(this, arg);
+			}
+		}
+
+
+		protected abstract void GetFiles(string folder);
+
+
+		protected abstract List<DirectoryInfo> GetStartDirectories(string folder);
+
+
+		public abstract void StartSearch();
+	}
 }

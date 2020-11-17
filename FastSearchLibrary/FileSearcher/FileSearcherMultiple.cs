@@ -1,4 +1,7 @@
-﻿using System;
+﻿#pragma warning disable IDE0007 // Use implicit type
+#pragma warning disable IDE0022 // Use expression body for methods
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
@@ -87,7 +90,7 @@ namespace FastSearchLibrary
 			{
 				searchers.Add(new FileCancellationDelegateSearcher(folder, isValid, handlerOption, false, tokenSource.Token));
 			}
-			
+
 			this.tokenSource = tokenSource;
 		}
 
@@ -179,7 +182,7 @@ namespace FastSearchLibrary
 		/// <param name="tokenSource">Instance of CancellationTokenSource for search process cancellation possibility.</param>
 		/// <exception cref="ArgumentException"></exception>
 		/// <exception cref="ArgumentNullException"></exception>
-		public FileSearcherMultiple(List<string> folders, string pattern, CancellationTokenSource tokenSource) 
+		public FileSearcherMultiple(List<string> folders, string pattern, CancellationTokenSource tokenSource)
 			: this(folders, pattern, tokenSource, ExecuteHandlers.InCurrentTask, true)
 		{
 		}
@@ -192,7 +195,7 @@ namespace FastSearchLibrary
 		/// <param name="tokenSource">Instance of CancellationTokenSource for search process cancellation possibility.</param>
 		/// <exception cref="ArgumentException"></exception>
 		/// <exception cref="ArgumentNullException"></exception>
-		public FileSearcherMultiple(List<string> folders, CancellationTokenSource tokenSource) 
+		public FileSearcherMultiple(List<string> folders, CancellationTokenSource tokenSource)
 			: this(folders, "*", tokenSource, ExecuteHandlers.InCurrentTask, true)
 		{
 		}
@@ -222,7 +225,7 @@ namespace FastSearchLibrary
 			if (folder == string.Empty)
 				throw new ArgumentException("Argument is not valid.", nameof(folder));
 
-			DirectoryInfo dir = new DirectoryInfo(folder);
+			var dir = new DirectoryInfo(folder);
 
 			if (!dir.Exists)
 				throw new ArgumentException("Argument does not represent an existing directory.", nameof(folder));
@@ -268,7 +271,7 @@ namespace FastSearchLibrary
 					s.StartSearch();
 				});
 			}
-			catch(OperationCanceledException)
+			catch (OperationCanceledException)
 			{
 				OnSearchCompleted(true);
 				if (!suppressOperationCanceledException)
@@ -285,11 +288,11 @@ namespace FastSearchLibrary
 		/// </summary>
 		public Task StartSearchAsync()
 		{
-			 return Task.Run(() =>
-			 {
-				  StartSearch();
+			return Task.Run(() =>
+			{
+				StartSearch();
 
-			 }, tokenSource.Token);      
+			}, tokenSource.Token);
 		}
 
 

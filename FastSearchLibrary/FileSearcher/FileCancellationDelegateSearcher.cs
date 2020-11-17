@@ -1,4 +1,7 @@
-﻿using System;
+﻿#pragma warning disable IDE0007 // Use implicit type
+#pragma warning disable IDE0021 // Use expression body for constructors
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
@@ -22,7 +25,7 @@ namespace FastSearchLibrary
 
 			DirectoryInfo dirInfo;
 			DirectoryInfo[] directories;
-			List<FileInfo> resultFiles = new List<FileInfo>();
+			var resultFiles = new List<FileInfo>();
 			try
 			{
 				dirInfo = new DirectoryInfo(folder);
@@ -96,7 +99,7 @@ namespace FastSearchLibrary
 			token.ThrowIfCancellationRequested();
 
 			DirectoryInfo[] directories;
-			List<FileInfo> resultFiles = new List<FileInfo>();
+			var resultFiles = new List<FileInfo>();
 			try
 			{
 				var dirInfo = new DirectoryInfo(folder);
