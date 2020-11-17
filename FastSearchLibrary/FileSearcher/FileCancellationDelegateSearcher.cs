@@ -20,10 +20,9 @@ namespace FastSearchLibrary
 		{
 			token.ThrowIfCancellationRequested();
 
-			DirectoryInfo dirInfo = null;
-			DirectoryInfo[] directories = null;
+			DirectoryInfo dirInfo;
+			DirectoryInfo[] directories;
 			List<FileInfo> resultFiles = new List<FileInfo>();
-
 			try
 			{
 				dirInfo = new DirectoryInfo(folder);
@@ -96,13 +95,11 @@ namespace FastSearchLibrary
 		{
 			token.ThrowIfCancellationRequested();
 
-			DirectoryInfo dirInfo = null;
-			DirectoryInfo[] directories = null;
+			DirectoryInfo[] directories;
 			List<FileInfo> resultFiles = new List<FileInfo>();
-
 			try
 			{
-				dirInfo = new DirectoryInfo(folder);
+				var dirInfo = new DirectoryInfo(folder);
 				directories = dirInfo.GetDirectories();
 
 				FileInfo[] files = dirInfo.GetFiles();

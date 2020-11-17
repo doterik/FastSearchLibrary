@@ -39,9 +39,8 @@ namespace FastSearchLibrary
 
 		protected override void GetFiles(string folder)
 		{
-			DirectoryInfo dirInfo = null;
-			DirectoryInfo[] directories = null;
-
+			DirectoryInfo dirInfo;
+			DirectoryInfo[] directories;
 			try
 			{
 				dirInfo = new DirectoryInfo(folder);
@@ -94,11 +93,10 @@ namespace FastSearchLibrary
 
 		protected override List<DirectoryInfo> GetStartDirectories(string folder)
 		{
-			DirectoryInfo dirInfo = null;
-			DirectoryInfo[] directories = null;
+			DirectoryInfo[] directories;
 			try
 			{
-				dirInfo = new DirectoryInfo(folder);
+				var dirInfo = new DirectoryInfo(folder);
 				directories = dirInfo.GetDirectories();
 
 				var resFiles = dirInfo.GetFiles(pattern);

@@ -364,8 +364,8 @@ namespace FastSearchLibrary
 		/// <exception cref="ArgumentNullException"></exception>
 		static public List<FileInfo> GetFiles(string folder, string pattern = "*")
 		{
-			DirectoryInfo dirInfo = null;
-			DirectoryInfo[] directories = null;
+			DirectoryInfo dirInfo;
+			DirectoryInfo[] directories;
 			try
 			{
 				dirInfo = new DirectoryInfo(folder);
@@ -419,10 +419,9 @@ namespace FastSearchLibrary
 		/// <exception cref="ArgumentNullException"></exception>
 		static public List<FileInfo> GetFiles(string folder, Func<FileInfo, bool> isValid)
 		{
-			DirectoryInfo dirInfo = null;
-			DirectoryInfo[] directories = null;
+			DirectoryInfo dirInfo;
+			DirectoryInfo[] directories;
 			List<FileInfo> resultFiles = new List<FileInfo>();
-
 			try
 			{
 				dirInfo = new DirectoryInfo(folder);
@@ -607,11 +606,10 @@ namespace FastSearchLibrary
 
 		static private List<DirectoryInfo> GetStartDirectories(string folder, ConcurrentBag<FileInfo> files, string pattern)
 		{
-			DirectoryInfo dirInfo = null;
-			DirectoryInfo[] directories = null;
+			DirectoryInfo[] directories;
 			try
 			{
-				dirInfo = new DirectoryInfo(folder);
+				var dirInfo = new DirectoryInfo(folder);
 				directories = dirInfo.GetDirectories();
 
 				foreach (var f in dirInfo.GetFiles(pattern))
@@ -646,12 +644,10 @@ namespace FastSearchLibrary
 
 		static private List<DirectoryInfo> GetStartDirectories(string folder, ConcurrentBag<FileInfo> resultFiles, Func<FileInfo, bool> isValid)
 		{
-			DirectoryInfo dirInfo = null;
-			DirectoryInfo[] directories = null;
-
+			DirectoryInfo[] directories;
 			try
 			{
-				dirInfo = new DirectoryInfo(folder);
+				var dirInfo = new DirectoryInfo(folder);
 				directories = dirInfo.GetDirectories();
 
 				FileInfo[] files = dirInfo.GetFiles();

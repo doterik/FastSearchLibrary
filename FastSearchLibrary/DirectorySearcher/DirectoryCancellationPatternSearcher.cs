@@ -22,9 +22,8 @@ namespace FastSearchLibrary
 		{
 			token.ThrowIfCancellationRequested();
 
-			DirectoryInfo dirInfo = null;
-			DirectoryInfo[] directories = null;
-
+			DirectoryInfo dirInfo;
+			DirectoryInfo[] directories;
 			try
 			{
 				dirInfo = new DirectoryInfo(folder);
@@ -77,10 +76,9 @@ namespace FastSearchLibrary
 		{
 			token.ThrowIfCancellationRequested();
 
-			DirectoryInfo dirInfo = null;
-			DirectoryInfo[] directories = null;
-			DirectoryInfo[] resultDirs = null;
-
+			DirectoryInfo dirInfo;
+			DirectoryInfo[] directories;
+			DirectoryInfo[] resultDirs;
 			try
 			{
 				dirInfo = new DirectoryInfo(folder);

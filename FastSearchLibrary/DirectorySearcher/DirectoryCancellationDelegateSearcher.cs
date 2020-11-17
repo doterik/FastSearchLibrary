@@ -19,13 +19,12 @@ namespace FastSearchLibrary
 		protected override void GetDirectories(string folder)
 		{
 			token.ThrowIfCancellationRequested();
-
-			DirectoryInfo dirInfo = null;
-			DirectoryInfo[] directories = null;
+						
+			DirectoryInfo[] directories;
 
 			try
 			{
-				dirInfo = new DirectoryInfo(folder);
+				var dirInfo = new DirectoryInfo(folder);
 				directories = dirInfo.GetDirectories();
 
 				if (directories.Length == 0) return;
@@ -82,13 +81,11 @@ namespace FastSearchLibrary
 		{
 			token.ThrowIfCancellationRequested();
 
-			DirectoryInfo dirInfo = null;
-			DirectoryInfo[] directories = null;
+			DirectoryInfo[] directories;
 			List<DirectoryInfo> resultDirs = new List<DirectoryInfo>();
-
 			try
 			{
-				dirInfo = new DirectoryInfo(folder);
+				var dirInfo = new DirectoryInfo(folder);
 				directories = dirInfo.GetDirectories();
 
 				if (directories.Length > 1)
@@ -97,7 +94,7 @@ namespace FastSearchLibrary
 					foreach (var dir in directories)
 					{
 						if (isValid(dir))
-							resultDirs.Add(dir); 
+							resultDirs.Add(dir);
 					}
 
 					if (resultDirs.Count > 0)
