@@ -12,15 +12,12 @@ namespace FastSearchLibrary
 		/// <summary>
 		/// Gets a list of finding directories.
 		/// </summary>
-		public List<DirectoryInfo> Directories { get; private set; }
+		public List<DirectoryInfo> Directories { get; }
 
 		/// <summary>
 		/// Initialize a new instance of DirectoryEventArgs class that describes a FilesFound event.
 		/// </summary>
 		/// <param name="directories">The list of finding directories.</param>
-		public DirectoryEventArgs(List<DirectoryInfo> directories)
-		{
-			Directories = directories;
-		}
+		public DirectoryEventArgs(List<DirectoryInfo> directories) => Directories = directories;
 	}
 }

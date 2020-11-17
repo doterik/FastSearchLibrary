@@ -1,5 +1,4 @@
-﻿#pragma warning disable IDE0003 // Remove qualification
-#pragma warning disable IDE0007 // Use implicit type
+﻿#pragma warning disable IDE0022 // Use expression body for methods
 
 using System;
 using System.Collections.Concurrent;
@@ -13,34 +12,27 @@ namespace FastSearchLibrary
 {
 	internal abstract class DirectoryCancellationSearcherBase
 	{
-
 		/// <summary>
 		/// Determines where execute event DirectoriesFound handlers
 		/// </summary>
-		protected ExecuteHandlers HandlerOption { get;  }
-
+		protected ExecuteHandlers HandlerOption { get; }
 		private string Folder { get; }
-
 		private ConcurrentBag<Task> TaskHandlers { get; }
-
 		protected CancellationToken Token { get; }
-
 		protected bool SuppressOperationCanceledException { get; set; }
 
 		public DirectoryCancellationSearcherBase(string folder, ExecuteHandlers handlerOption, bool suppressOperationCanceledException, CancellationToken token)
 		{
-			this.Folder = folder;
-			this.Token = token;
-			this.HandlerOption = handlerOption;
-			this.SuppressOperationCanceledException = suppressOperationCanceledException;
+			Folder = folder;
+			Token = token;
+			HandlerOption = handlerOption;
+			SuppressOperationCanceledException = suppressOperationCanceledException;
 			TaskHandlers = new ConcurrentBag<Task>();
 		}
-
 
 		public event EventHandler<DirectoryEventArgs>? DirectoriesFound;
 
 		public event EventHandler<SearchCompletedEventArgs>? SearchCompleted;
-
 
 		protected virtual void OnDirectoriesFound(List<DirectoryInfo> directories)
 		{
@@ -55,7 +47,6 @@ namespace FastSearchLibrary
 			}
 		}
 
-
 		protected virtual void OnSearchCompleted(bool isCanceled)
 		{
 			if (SearchCompleted != null)
@@ -68,11 +59,9 @@ namespace FastSearchLibrary
 					}
 					catch (AggregateException ex)
 					{
-						if (!(ex.InnerException is TaskCanceledException))
-							throw;
+						if (!(ex.InnerException is TaskCanceledException)) throw;
 
-						if (!isCanceled)
-							isCanceled = true;
+						if (!isCanceled) isCanceled = true;
 					}
 				}
 
@@ -80,8 +69,6 @@ namespace FastSearchLibrary
 				SearchCompleted(this, arg);
 			}
 		}
-
-
 
 		/// <summary>
 		/// Starts a directory search operation with realtime reporting using several threads in thread pool.
@@ -96,8 +83,7 @@ namespace FastSearchLibrary
 			{
 				OnSearchCompleted(true); // isCanceled == true
 
-				if (!SuppressOperationCanceledException)
-					Token.ThrowIfCancellationRequested();
+				if (!SuppressOperationCanceledException) Token.ThrowIfCancellationRequested();
 
 				return;
 			}
@@ -105,25 +91,19 @@ namespace FastSearchLibrary
 			OnSearchCompleted(false);
 		}
 
-
-
 		protected virtual void GetDirectoriesFast()
 		{
-			List<DirectoryInfo> startDirs = GetStartDirectories(Folder);
 
-			startDirs.AsParallel().WithCancellation(Token).ForAll((d) =>
+			GetStartDirectories(Folder).AsParallel().WithCancellation(Token).ForAll((d1) =>
 			{
-				GetStartDirectories(d.FullName).AsParallel().WithCancellation(Token).ForAll((dir) =>
+				GetStartDirectories(d1.FullName).AsParallel().WithCancellation(Token).ForAll((d2) =>
 				{
-					GetDirectories(dir.FullName);
+					GetDirectories(d2.FullName);
 				});
 			});
 		}
 
-
 		protected abstract void GetDirectories(string folder);
-
 		protected abstract List<DirectoryInfo> GetStartDirectories(string folder);
-
 	}
 }

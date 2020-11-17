@@ -1,5 +1,4 @@
-﻿#pragma warning disable IDE0007 // Use implicit type
-#pragma warning disable IDE0021 // Use expression body for constructors
+﻿#pragma warning disable IDE0021 // Use expression body for constructors
 #pragma warning disable IDE0022 // Use expression body for methods
 #pragma warning disable IDE0052 // Remove unread private members
 
@@ -26,23 +25,16 @@ namespace FastSearchLibrary
 		private readonly CancellationTokenSource tokenSource;
 		private readonly ExecuteHandlers handlerOption;
 
-
 		/// <summary>
 		/// Event fires when next portion of directories is found. Event handlers are not thread safe. 
 		/// </summary>
 		public event EventHandler<DirectoryEventArgs> DirectoriesFound
 		{
 			add
-			{
-				searcher.DirectoriesFound += value;
-			}
-
+			{ searcher.DirectoriesFound += value; }
 			remove
-			{
-				searcher.DirectoriesFound -= value;
-			}
+			{ searcher.DirectoriesFound -= value; }
 		}
-
 
 		/// <summary>
 		/// Event fires when search process is completed or stopped.
@@ -50,16 +42,10 @@ namespace FastSearchLibrary
 		public event EventHandler<SearchCompletedEventArgs> SearchCompleted
 		{
 			add
-			{
-				searcher.SearchCompleted += value;
-			}
-
+			{ searcher.SearchCompleted += value; }
 			remove
-			{
-				searcher.SearchCompleted -= value;
-			}
+			{ searcher.SearchCompleted -= value; }
 		}
-
 
 		#region DirectoryCancellationPatternSearcher constructors
 
@@ -85,7 +71,6 @@ namespace FastSearchLibrary
 			this.tokenSource = tokenSource;
 		}
 
-
 		/// <summary>
 		/// Initialize a new instance of DirectorySearch class. 
 		/// </summary>
@@ -96,10 +81,7 @@ namespace FastSearchLibrary
 		/// <exception cref="ArgumentException"></exception>
 		/// <exception cref="ArgumentNullException"></exception>
 		public DirectorySearcher(string folder, string pattern, CancellationTokenSource tokenSource, ExecuteHandlers handlerOption)
-			: this(folder, pattern, tokenSource, handlerOption, true)
-		{
-		}
-
+			: this(folder, pattern, tokenSource, handlerOption, true) { }
 
 		/// <summary>
 		/// Initialize a new instance of DirectorySearch class. 
@@ -110,10 +92,7 @@ namespace FastSearchLibrary
 		/// <exception cref="ArgumentException"></exception>
 		/// <exception cref="ArgumentNullException"></exception>
 		public DirectorySearcher(string folder, string pattern, CancellationTokenSource tokenSource)
-			: this(folder, pattern, tokenSource, ExecuteHandlers.InCurrentTask, true)
-		{
-		}
-
+			: this(folder, pattern, tokenSource, ExecuteHandlers.InCurrentTask, true) { }
 
 		/// <summary>
 		/// Initialize a new instance of DirectorySearch class. 
@@ -123,13 +102,9 @@ namespace FastSearchLibrary
 		/// <exception cref="ArgumentException"></exception>
 		/// <exception cref="ArgumentNullException"></exception>
 		public DirectorySearcher(string folder, CancellationTokenSource tokenSource)
-			: this(folder, "*", tokenSource, ExecuteHandlers.InCurrentTask, true)
-		{
-
-		}
+			: this(folder, "*", tokenSource, ExecuteHandlers.InCurrentTask, true) { }
 
 		#endregion
-
 
 		#region DirectoryCancellationDelegateSearcher constructors
 
@@ -155,7 +130,6 @@ namespace FastSearchLibrary
 			this.tokenSource = tokenSource;
 		}
 
-
 		/// <summary>
 		/// Initialize a new instance of DirectorySearch class.
 		/// </summary>
@@ -171,7 +145,6 @@ namespace FastSearchLibrary
 			this.handlerOption = handlerOption;
 		}
 
-
 		/// <summary>
 		/// Initialize a new instance of DirectorySearch class.
 		/// </summary>
@@ -181,64 +154,43 @@ namespace FastSearchLibrary
 		/// <exception cref="ArgumentException"></exception>
 		/// <exception cref="ArgumentNullException"></exception>
 		public DirectorySearcher(string folder, Func<DirectoryInfo, bool> isValid, CancellationTokenSource tokenSource)
-			: this(folder, isValid, tokenSource, ExecuteHandlers.InCurrentTask, true)
-		{
-		}
-
+			: this(folder, isValid, tokenSource, ExecuteHandlers.InCurrentTask, true) { }
 
 		#endregion
 
-
 		#region Checking methods
-
 		private static void CheckFolder(string folder)
 		{
-			if (folder == null)
-				throw new ArgumentNullException(nameof(folder), "Argument is null.");
-
-			if (folder == string.Empty)
-				throw new ArgumentException("Argument is not valid.", nameof(folder));
+			if (folder == null) throw new ArgumentNullException(nameof(folder), "Argument is null.");
+			if (folder == string.Empty) throw new ArgumentException("Argument is not valid.", nameof(folder));
 
 			var dir = new DirectoryInfo(folder);
 
-			if (!dir.Exists)
-				throw new ArgumentException("Argument does not represent an existing directory.", nameof(folder));
+			if (!dir.Exists) throw new ArgumentException("Argument does not represent an existing directory.", nameof(folder));
 		}
-
 
 		private static void CheckPattern(string pattern)
 		{
-			if (pattern == null)
-				throw new ArgumentNullException(nameof(pattern), "Argument is null.");
-
-			if (pattern == string.Empty)
-				throw new ArgumentException("Argument is not valid.", nameof(pattern));
+			if (pattern == null) throw new ArgumentNullException(nameof(pattern), "Argument is null.");
+			if (pattern == string.Empty) throw new ArgumentException("Argument is not valid.", nameof(pattern));
 		}
-
 
 		private static void CheckDelegate(Func<DirectoryInfo, bool> isValid)
 		{
-			if (isValid == null)
-				throw new ArgumentNullException(nameof(isValid), "Argument is null.");
+			if (isValid == null) throw new ArgumentNullException(nameof(isValid), "Argument is null.");
 		}
-
 
 		private static void CheckTokenSource(CancellationTokenSource tokenSource)
 		{
-			if (tokenSource == null)
-				throw new ArgumentNullException(nameof(tokenSource), "Argument \"tokenSource\" is null.");
+			if (tokenSource == null) throw new ArgumentNullException(nameof(tokenSource), "Argument \"tokenSource\" is null.");
 		}
 
 		#endregion
-
 
 		/// <summary>
 		/// Starts a directory search operation with realtime reporting using several threads in thread pool.
 		/// </summary>
-		public void StartSearch()
-		{
-			searcher.StartSearch();
-		}
+		public void StartSearch() => searcher.StartSearch();
 
 
 		/// <summary>
@@ -256,13 +208,9 @@ namespace FastSearchLibrary
 		/// <summary>
 		/// Stops a directory search operation.
 		/// </summary>
-		public void StopSearch()
-		{
-			tokenSource.Cancel();
-		}
+		public void StopSearch() => tokenSource.Cancel();
 
 		#endregion
-
 
 		#region Static members
 
@@ -278,15 +226,13 @@ namespace FastSearchLibrary
 		/// <exception cref="ArgumentNullException"></exception>
 		/// <exception cref="ArgumentException"></exception>
 		/// <exception cref="NotSupportedException"></exception>
-		static public List<DirectoryInfo> GetDirectories(string folder, string pattern = "*")
+		public static List<DirectoryInfo> GetDirectories(string folder, string pattern = "*")
 		{
 			var directories = new List<DirectoryInfo>();
 			GetDirectories(folder, directories, pattern);
 
 			return directories;
 		}
-
-
 
 		/// <summary>
 		/// Returns a list of directories that are contained in directory and all subdirectories.
@@ -298,7 +244,7 @@ namespace FastSearchLibrary
 		/// <exception cref="ArgumentNullException"></exception>
 		/// <exception cref="NullReferenceException"></exception>
 		/// <exception cref="NotSupportedException"></exception>
-		static public List<DirectoryInfo> GetDirectories(string folder, Func<DirectoryInfo, bool> isValid)
+		public static List<DirectoryInfo> GetDirectories(string folder, Func<DirectoryInfo, bool> isValid)
 		{
 			var directories = new List<DirectoryInfo>();
 			GetDirectories(folder, directories, isValid);
@@ -306,8 +252,6 @@ namespace FastSearchLibrary
 			return directories;
 		}
 
-
-
 		/// <summary>
 		/// Returns a list of directories that are contained in directory and all subdirectories as an asynchronous operation.
 		/// </summary>
@@ -317,15 +261,8 @@ namespace FastSearchLibrary
 		/// <exception cref="ArgumentNullException"></exception>
 		/// <exception cref="ArgumentException"></exception>
 		/// <exception cref="NotSupportedException"></exception>
-		static public Task<List<DirectoryInfo>> GetDirectoriesAsync(string folder, string pattern = "*")
-		{
-			return Task.Run<List<DirectoryInfo>>(() =>
-			{
-				return GetDirectories(folder, pattern);
-			});
-		}
-
-
+		public static Task<List<DirectoryInfo>> GetDirectoriesAsync(string folder, string pattern = "*") =>
+			Task.Run(() => GetDirectories(folder, pattern));
 
 		/// <summary>
 		/// Returns a list of directories that are contained in directory and all subdirectories as an asynchronous operation.
@@ -336,15 +273,8 @@ namespace FastSearchLibrary
 		/// <exception cref="ArgumentNullException"></exception>
 		/// <exception cref="NullReferenceException"></exception>
 		/// <exception cref="NotSupportedException"></exception>
-		static public Task<List<DirectoryInfo>> GetDirectoriesAsync(string folder, Func<DirectoryInfo, bool> isValid)
-		{
-			return Task.Run<List<DirectoryInfo>>(() =>
-			{
-				return GetDirectories(folder, isValid);
-			});
-		}
-
-
+		public static Task<List<DirectoryInfo>> GetDirectoriesAsync(string folder, Func<DirectoryInfo, bool> isValid) =>
+			Task.Run(() => GetDirectories(folder, isValid));
 
 		/// <summary>
 		/// Returns a list of directories that are contained in directory and all subdirectories using several threads in thread pool.
@@ -356,24 +286,20 @@ namespace FastSearchLibrary
 		/// <exception cref="ArgumentNullException"></exception>
 		/// <exception cref="ArgumentException"></exception>
 		/// <exception cref="NotSupportedException"></exception>
-		static public List<DirectoryInfo> GetDirectoriesFast(string folder, string pattern = "*")
+		public static List<DirectoryInfo> GetDirectoriesFast(string folder, string pattern = "*")
 		{
 			var dirs = new ConcurrentBag<DirectoryInfo>();
 
-			List<DirectoryInfo> startDirs = GetStartDirectories(folder, dirs, pattern);
-
-			startDirs.AsParallel().ForAll((d) =>
+			GetStartDirectories(folder, dirs, pattern).AsParallel().ForAll((d1) =>
 			{
-				GetStartDirectories(d.FullName, dirs, pattern).AsParallel().ForAll((dir) =>
+				GetStartDirectories(d1.FullName, dirs, pattern).AsParallel().ForAll((d2) =>
 				{
-					GetDirectories(dir.FullName, pattern).ForEach((r) => dirs.Add(r));
+					GetDirectories(d2.FullName, pattern).ForEach((r) => dirs.Add(r));
 				});
 			});
 
 			return dirs.ToList();
 		}
-
-
 
 		/// <summary>
 		/// Returns a list of directories that are contained in directory and all subdirectories using several threads in thread pool.
@@ -385,24 +311,20 @@ namespace FastSearchLibrary
 		/// <exception cref="ArgumentNullException"></exception>
 		/// <exception cref="NullReferenceException"></exception>
 		/// <exception cref="NotSupportedException"></exception>
-		static public List<DirectoryInfo> GetDirectoriesFast(string folder, Func<DirectoryInfo, bool> isValid)
+		public static List<DirectoryInfo> GetDirectoriesFast(string folder, Func<DirectoryInfo, bool> isValid)
 		{
 			var dirs = new ConcurrentBag<DirectoryInfo>();
 
-			List<DirectoryInfo> startDirs = GetStartDirectories(folder, dirs, isValid);
-
-			startDirs.AsParallel().ForAll((d) =>
+			GetStartDirectories(folder, dirs, isValid).AsParallel().ForAll((d1) =>
 			{
-				GetStartDirectories(d.FullName, dirs, isValid).AsParallel().ForAll((dir) =>
+				GetStartDirectories(d1.FullName, dirs, isValid).AsParallel().ForAll((d2) =>
 				{
-					GetDirectories(dir.FullName, isValid).ForEach((r) => dirs.Add(r));
+					GetDirectories(d2.FullName, isValid).ForEach((r) => dirs.Add(r));
 				});
 			});
 
 			return dirs.ToList();
 		}
-
-
 
 		/// <summary>
 		/// Returns a list of directories that are contained in directory and all subdirectories using several threads in thread pool as an asynchronous operation.
@@ -413,15 +335,8 @@ namespace FastSearchLibrary
 		/// <exception cref="ArgumentNullException"></exception>
 		/// <exception cref="ArgumentException"></exception>
 		/// <exception cref="NotSupportedException"></exception>
-		static public Task<List<DirectoryInfo>> GetDirectoriesFastAsync(string folder, string pattern = "*")
-		{
-			return Task.Run<List<DirectoryInfo>>(() =>
-			{
-				return GetDirectoriesFast(folder, pattern);
-			});
-		}
-
-
+		public static Task<List<DirectoryInfo>> GetDirectoriesFastAsync(string folder, string pattern = "*") =>
+			Task.Run(() => GetDirectoriesFast(folder, pattern));
 
 		/// <summary>
 		/// Returns a list of directories that are contained in directory and all subdirectories using several threads in thread pool as an asynchronous operation.
@@ -432,24 +347,16 @@ namespace FastSearchLibrary
 		/// <exception cref="ArgumentNullException"></exception>
 		/// <exception cref="NullReferenceException"></exception>
 		/// <exception cref="NotSupportedException"></exception>
-		static public Task<List<DirectoryInfo>> GetDirectoriesFastAsync(string folder, Func<DirectoryInfo, bool> isValid)
-		{
-			return Task.Run<List<DirectoryInfo>>(() =>
-			{
-				return GetDirectoriesFast(folder, isValid);
-			});
-		}
+		public static Task<List<DirectoryInfo>> GetDirectoriesFastAsync(string folder, Func<DirectoryInfo, bool> isValid) =>
+			Task.Run(() => GetDirectoriesFast(folder, isValid));
 
 		#endregion
 
-
 		#region Private members
-
-		static private void GetDirectories(string folder, List<DirectoryInfo> result, string pattern)
+		private static void GetDirectories(string folder, List<DirectoryInfo> result, string pattern)
 		{
 			DirectoryInfo? dirInfo = null;
 			DirectoryInfo[]? directories = null;
-
 			try
 			{
 				dirInfo = new DirectoryInfo(folder);
@@ -457,18 +364,9 @@ namespace FastSearchLibrary
 
 				if (directories.Length == 0) return;
 			}
-			catch (UnauthorizedAccessException)
-			{
-				return;
-			}
-			catch (PathTooLongException)
-			{
-				return;
-			}
-			catch (DirectoryNotFoundException)
-			{
-				return;
-			}
+			catch (UnauthorizedAccessException) { return; }
+			catch (PathTooLongException) { return; }
+			catch (DirectoryNotFoundException) { return; }
 
 			Array.ForEach(directories, (d) => GetDirectories(d.FullName, result, pattern));
 
@@ -476,21 +374,14 @@ namespace FastSearchLibrary
 			{
 				Array.ForEach(dirInfo.GetDirectories(pattern), (d) => result.Add(d));
 			}
-			catch (UnauthorizedAccessException)
-			{
-			}
-			catch (DirectoryNotFoundException)
-			{
-			}
+			catch (UnauthorizedAccessException) { }
+			catch (DirectoryNotFoundException) { }
 		}
 
-
-
-		static private void GetDirectories(string folder, List<DirectoryInfo> result, Func<DirectoryInfo, bool> isValid)
+		private static void GetDirectories(string folder, List<DirectoryInfo> result, Func<DirectoryInfo, bool> isValid)
 		{
 			DirectoryInfo? dirInfo = null;
 			DirectoryInfo[]? directories = null;
-
 			try
 			{
 				dirInfo = new DirectoryInfo(folder);
@@ -498,18 +389,9 @@ namespace FastSearchLibrary
 
 				if (directories.Length == 0) return;
 			}
-			catch (UnauthorizedAccessException)
-			{
-				return;
-			}
-			catch (PathTooLongException)
-			{
-				return;
-			}
-			catch (DirectoryNotFoundException)
-			{
-				return;
-			}
+			catch (UnauthorizedAccessException) { return; }
+			catch (PathTooLongException) { return; }
+			catch (DirectoryNotFoundException) { return; }
 
 			Array.ForEach(directories, (d) => GetDirectories(d.FullName, result, isValid));
 
@@ -521,20 +403,12 @@ namespace FastSearchLibrary
 						result.Add(d);
 				});
 			}
-			catch (UnauthorizedAccessException)
-			{
-			}
-			catch (PathTooLongException)
-			{
-			}
-			catch (DirectoryNotFoundException)
-			{
-			}
+			catch (UnauthorizedAccessException) { }
+			catch (PathTooLongException) { }
+			catch (DirectoryNotFoundException) { }
 		}
 
-
-
-		static private List<DirectoryInfo> GetStartDirectories(string folder, ConcurrentBag<DirectoryInfo> dirs, string pattern)
+		private static List<DirectoryInfo> GetStartDirectories(string folder, ConcurrentBag<DirectoryInfo> dirs, string pattern)
 		{
 			DirectoryInfo? dirInfo = null;
 			DirectoryInfo[]? directories = null;
@@ -549,22 +423,12 @@ namespace FastSearchLibrary
 					return new List<DirectoryInfo>(directories);
 				}
 
-				if (directories.Length == 0)
-					return new List<DirectoryInfo>();
+				if (directories.Length == 0) return new List<DirectoryInfo>();
 
 			}
-			catch (UnauthorizedAccessException)
-			{
-				return new List<DirectoryInfo>();
-			}
-			catch (PathTooLongException)
-			{
-				return new List<DirectoryInfo>();
-			}
-			catch (DirectoryNotFoundException)
-			{
-				return new List<DirectoryInfo>();
-			}
+			catch (UnauthorizedAccessException) { return new List<DirectoryInfo>(); }
+			catch (PathTooLongException) { return new List<DirectoryInfo>(); }
+			catch (DirectoryNotFoundException) { return new List<DirectoryInfo>(); }
 
 			// if directories.Length == 1
 			Array.ForEach(dirInfo.GetDirectories(pattern), (d) => dirs.Add(d));
@@ -572,9 +436,7 @@ namespace FastSearchLibrary
 			return GetStartDirectories(directories[0].FullName, dirs, pattern);
 		}
 
-
-
-		static private List<DirectoryInfo> GetStartDirectories(string folder, ConcurrentBag<DirectoryInfo> dirs, Func<DirectoryInfo, bool> isValid)
+		private static List<DirectoryInfo> GetStartDirectories(string folder, ConcurrentBag<DirectoryInfo> dirs, Func<DirectoryInfo, bool> isValid)
 		{
 			DirectoryInfo? dirInfo = null;
 			DirectoryInfo[]? directories = null;
@@ -598,18 +460,9 @@ namespace FastSearchLibrary
 					return new List<DirectoryInfo>();
 
 			}
-			catch (UnauthorizedAccessException)
-			{
-				return new List<DirectoryInfo>();
-			}
-			catch (PathTooLongException)
-			{
-				return new List<DirectoryInfo>();
-			}
-			catch (DirectoryNotFoundException)
-			{
-				return new List<DirectoryInfo>();
-			}
+			catch (UnauthorizedAccessException) { return new List<DirectoryInfo>(); }
+			catch (PathTooLongException) { return new List<DirectoryInfo>(); }
+			catch (DirectoryNotFoundException) { return new List<DirectoryInfo>(); }
 
 			// if directories.Length == 1
 			Array.ForEach(directories, (d) =>
@@ -620,7 +473,6 @@ namespace FastSearchLibrary
 
 			return GetStartDirectories(directories[0].FullName, dirs, isValid);
 		}
-
 
 		#endregion
 
