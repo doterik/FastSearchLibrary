@@ -1,5 +1,4 @@
-﻿#pragma warning disable IDE0003 // Remove qualification
-#pragma warning disable IDE0007 // Use implicit type
+﻿#pragma warning disable IDE0007 // Use implicit type
 
 using System;
 using System.Collections.Generic;
@@ -12,18 +11,15 @@ namespace FastSearchLibrary
 {
 	internal abstract class FileCancellationSearcherBase : FileSearcherBase
 	{
-
-		protected CancellationToken token;
-
-		protected bool SuppressOperationCanceledException { get; set; }
+		protected CancellationToken Token { get; }
+		protected bool SuppressOperationCanceledException { get; }
 
 		public FileCancellationSearcherBase(string folder, ExecuteHandlers handlerOption, bool suppressOperationCanceledException, CancellationToken token)
 			: base(folder, handlerOption)
 		{
-			this.token = token;
-			this.SuppressOperationCanceledException = suppressOperationCanceledException;
+			Token = token;
+			SuppressOperationCanceledException = suppressOperationCanceledException;
 		}
-
 
 		public override void StartSearch()
 		{
@@ -34,27 +30,24 @@ namespace FastSearchLibrary
 			catch (OperationCanceledException)
 			{
 				OnSearchCompleted(true); // isCanceled == true
-										 
-				if (!SuppressOperationCanceledException)
-					token.ThrowIfCancellationRequested();
+
+				if (!SuppressOperationCanceledException) Token.ThrowIfCancellationRequested();
 
 				return;
 			}
 
-			OnSearchCompleted(false); 
+			OnSearchCompleted(false);
 		}
-
 
 		protected override void OnFilesFound(List<FileInfo> files)
 		{
-			var arg = new FileEventArgs(files);
+			var arg = new FileEventArgs(files); // TODO arg !?
 
 			if (HandlerOption == ExecuteHandlers.InNewTask)
-				TaskHandlers.Add(Task.Run(() => CallFilesFound(files), token));
+				TaskHandlers.Add(Task.Run(() => CallFilesFound(files), Token));
 			else
 				CallFilesFound(files);
 		}
-
 
 		protected override void OnSearchCompleted(bool isCanceled)
 		{
@@ -66,32 +59,28 @@ namespace FastSearchLibrary
 				}
 				catch (AggregateException ex)
 				{
-					if (!(ex.InnerException is TaskCanceledException))
-						throw;
+					if (!(ex.InnerException is TaskCanceledException)) throw;
 
-					if (!isCanceled)
-						isCanceled = true;
+					if (!isCanceled) isCanceled = true;
 				}
 
-				CallSearchCompleted(isCanceled);           
+				CallSearchCompleted(isCanceled); // TODO =else
 			}
 			else
 				CallSearchCompleted(isCanceled);
 		}
 
-
 		protected override void GetFilesFast()
 		{
 			List<DirectoryInfo> startDirs = GetStartDirectories(Folder);
 
-			startDirs.AsParallel().WithCancellation(token).ForAll((d) =>
+			GetStartDirectories(Folder).AsParallel().WithCancellation(Token).ForAll((d1) =>
 			{
-				GetStartDirectories(d.FullName).AsParallel().WithCancellation(token).ForAll((dir) =>
+				GetStartDirectories(d1.FullName).AsParallel().WithCancellation(Token).ForAll((d2) =>
 				{
-					GetFiles(dir.FullName);
+					GetFiles(d2.FullName);
 				});
 			});
 		}
-
 	}
 }

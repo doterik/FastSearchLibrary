@@ -1,5 +1,4 @@
-﻿#pragma warning disable IDE0007 // Use implicit type
-#pragma warning disable IDE0022 // Use expression body for methods
+﻿#pragma warning disable IDE0022 // Use expression body for methods
 
 using System;
 using System.Collections.Generic;
@@ -20,30 +19,21 @@ namespace FastSearchLibrary
 
 		private readonly bool suppressOperationCanceledException;
 
-
 		/// <summary>
 		/// Event fires when next portion of files is found. Event handlers are not thread safe. 
 		/// </summary>
 		public event EventHandler<FileEventArgs>? FilesFound
 		{
 			add
-			{
-				searchers.ForEach((s) => s.FilesFound += value);
-			}
-
+			{ searchers.ForEach((s) => s.FilesFound += value); }
 			remove
-			{
-				searchers.ForEach((s) => s.FilesFound -= value);
-			}
+			{ searchers.ForEach((s) => s.FilesFound -= value); }
 		}
-
 
 		/// <summary>
 		/// Event fires when search process is completed or stopped.
 		/// </summary>
 		public event EventHandler<SearchCompletedEventArgs>? SearchCompleted;
-
-
 
 		/// <summary>
 		/// Calls a SearchCompleted event.
@@ -51,13 +41,8 @@ namespace FastSearchLibrary
 		/// <param name="isCanceled">Determines whether search process canceled.</param>
 		protected virtual void OnSearchCompleted(bool isCanceled)
 		{
-			if (SearchCompleted != null)
-			{
-				var arg = new SearchCompletedEventArgs(isCanceled);
-				SearchCompleted(this, arg);
-			}
+			SearchCompleted?.Invoke(this, new SearchCompletedEventArgs(isCanceled));
 		}
-
 
 		#region FileCancellationDelegateSearcher constructors
 
@@ -102,10 +87,7 @@ namespace FastSearchLibrary
 		/// <exception cref="ArgumentException"></exception>
 		/// <exception cref="ArgumentNullException"></exception>
 		public FileSearcherMultiple(List<string> folders, Func<FileInfo, bool> isValid, CancellationTokenSource tokenSource, ExecuteHandlers handlerOption)
-			: this(folders, isValid, tokenSource, handlerOption, true)
-		{
-		}
-
+			: this(folders, isValid, tokenSource, handlerOption, true) { }
 
 		/// <summary>
 		/// Initializes a new instance of FileSearcherMultiple class.
@@ -116,12 +98,9 @@ namespace FastSearchLibrary
 		/// <exception cref="ArgumentException"></exception>
 		/// <exception cref="ArgumentNullException"></exception>
 		public FileSearcherMultiple(List<string> folders, Func<FileInfo, bool> isValid, CancellationTokenSource tokenSource)
-			: this(folders, isValid, tokenSource, ExecuteHandlers.InCurrentTask, true)
-		{
-		}
+			: this(folders, isValid, tokenSource, ExecuteHandlers.InCurrentTask, true) { }
 
 		#endregion
-
 
 		#region FileCancellationPatternSearcher constructors
 
@@ -155,7 +134,6 @@ namespace FastSearchLibrary
 			this.tokenSource = tokenSource;
 		}
 
-
 		/// <summary>
 		/// Initializes a new instance of FileSearcherMultiple class.
 		/// </summary>
@@ -166,10 +144,7 @@ namespace FastSearchLibrary
 		/// <exception cref="ArgumentException"></exception>
 		/// <exception cref="ArgumentNullException"></exception>
 		public FileSearcherMultiple(List<string> folders, string pattern, CancellationTokenSource tokenSource, ExecuteHandlers handlerOption)
-			: this(folders, pattern, tokenSource, handlerOption, true)
-		{
-		}
-
+			: this(folders, pattern, tokenSource, handlerOption, true) { }
 
 		/// <summary>
 		/// Initializes a new instance of FileSearcherMultiple class.
@@ -180,10 +155,7 @@ namespace FastSearchLibrary
 		/// <exception cref="ArgumentException"></exception>
 		/// <exception cref="ArgumentNullException"></exception>
 		public FileSearcherMultiple(List<string> folders, string pattern, CancellationTokenSource tokenSource)
-			: this(folders, pattern, tokenSource, ExecuteHandlers.InCurrentTask, true)
-		{
-		}
-
+			: this(folders, pattern, tokenSource, ExecuteHandlers.InCurrentTask, true) { }
 
 		/// <summary>
 		/// Initializes a new instance of FileSearcherMultiple class.
@@ -193,51 +165,35 @@ namespace FastSearchLibrary
 		/// <exception cref="ArgumentException"></exception>
 		/// <exception cref="ArgumentNullException"></exception>
 		public FileSearcherMultiple(List<string> folders, CancellationTokenSource tokenSource)
-			: this(folders, "*", tokenSource, ExecuteHandlers.InCurrentTask, true)
-		{
-		}
+			: this(folders, "*", tokenSource, ExecuteHandlers.InCurrentTask, true) { }
 
 		#endregion
-
 
 		#region Checking methods
 		private static void CheckFolders(List<string> folders)
 		{
-			if (folders == null)
-				throw new ArgumentNullException(nameof(folders), "Argument is null.");
+			if (folders == null) throw new ArgumentNullException(nameof(folders), "Argument is null.");
+			if (folders.Count == 0) throw new ArgumentException("Argument is an empty list.", nameof(folders));
 
-			if (folders.Count == 0)
-				throw new ArgumentException("Argument is an empty list.", nameof(folders));
-
-			foreach (var folder in folders)
-				CheckFolder(folder);
+			foreach (var folder in folders) CheckFolder(folder);
 		}
-
 
 		private static void CheckFolder(string folder)
 		{
-			if (folder == null)
-				throw new ArgumentNullException(nameof(folder), "Argument is null.");
-
-			if (folder == string.Empty)
-				throw new ArgumentException("Argument is not valid.", nameof(folder));
+			if (folder == null) throw new ArgumentNullException(nameof(folder), "Argument is null.");
+			if (folder == string.Empty) throw new ArgumentException("Argument is not valid.", nameof(folder));
 
 			var dir = new DirectoryInfo(folder);
 
-			if (!dir.Exists)
-				throw new ArgumentException("Argument does not represent an existing directory.", nameof(folder));
+			if (!dir.Exists) throw new ArgumentException("Argument does not represent an existing directory.", nameof(folder));
 		}
-
 
 		private static void CheckPattern(string pattern)
 		{
-			if (pattern == null)
-				throw new ArgumentNullException(nameof(pattern), "Argument is null.");
+			if (pattern == null) throw new ArgumentNullException(nameof(pattern), "Argument is null.");
 
-			if (pattern == string.Empty)
-				throw new ArgumentException("Argument is not valid.", nameof(pattern));
+			if (pattern == string.Empty) throw new ArgumentException("Argument is not valid.", nameof(pattern));
 		}
-
 
 		private static void CheckDelegate(Func<FileInfo, bool> isValid)
 		{
@@ -245,13 +201,10 @@ namespace FastSearchLibrary
 				throw new ArgumentNullException(nameof(isValid), "Argument is null.");
 		}
 
-
 		private static void CheckTokenSource(CancellationTokenSource tokenSource)
 		{
-			if (tokenSource == null)
-				throw new ArgumentNullException(nameof(tokenSource), "Argument is null.");
+			if (tokenSource == null) throw new ArgumentNullException(nameof(tokenSource), "Argument is null.");
 		}
-
 
 		#endregion
 
@@ -271,14 +224,12 @@ namespace FastSearchLibrary
 			catch (OperationCanceledException)
 			{
 				OnSearchCompleted(true);
-				if (!suppressOperationCanceledException)
-					throw;
+				if (!suppressOperationCanceledException) throw;
 				return;
 			}
 
 			OnSearchCompleted(false);
 		}
-
 
 		/// <summary>
 		/// Starts a file search operation with realtime reporting using several threads in thread pool as an asynchronous operation.
@@ -292,14 +243,10 @@ namespace FastSearchLibrary
 			}, tokenSource.Token);
 		}
 
-
 		/// <summary>
 		/// Stops a file search operation.
 		/// </summary>
-		public void StopSearch()
-		{
-			tokenSource.Cancel();
-		}
+		public void StopSearch() => tokenSource.Cancel();
 
 	}
 }

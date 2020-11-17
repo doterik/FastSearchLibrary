@@ -1,10 +1,11 @@
-﻿#pragma warning disable IDE0007 // Use implicit type
+﻿//#pragma warning disable IDE0007 // Use implicit type
 #pragma warning disable IDE0021 // Use expression body for constructors
 
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
+using System.Linq;
 
 namespace FastSearchLibrary
 {
@@ -18,10 +19,9 @@ namespace FastSearchLibrary
 			this.isValid = isValid;
 		}
 
-
 		protected override void GetFiles(string folder)
 		{
-			token.ThrowIfCancellationRequested();
+			Token.ThrowIfCancellationRequested();
 
 			DirectoryInfo dirInfo;
 			DirectoryInfo[] directories;
@@ -33,70 +33,44 @@ namespace FastSearchLibrary
 
 				if (directories.Length == 0)
 				{
-					FileInfo[] files = dirInfo.GetFiles();
+					resultFiles.AddRange(dirInfo.GetFiles().Where(file => isValid(file)));
 
-					foreach (var file in files)
-						if (isValid(file))
-							resultFiles.Add(file);
-
-					if (resultFiles.Count > 0)
-						OnFilesFound(resultFiles);
+					if (resultFiles.Count > 0) OnFilesFound(resultFiles);
 
 					return;
 				}
 			}
-			catch (UnauthorizedAccessException)
-			{
-				return;
-			}
-			catch (PathTooLongException)
-			{
-				return;
-			}
-			catch (DirectoryNotFoundException)
-			{
-				return;
-			}
+			catch (UnauthorizedAccessException) { return; }
+			catch (PathTooLongException) { return; }
+			catch (DirectoryNotFoundException) { return; }
 
 
 			foreach (var d in directories)
 			{
-				token.ThrowIfCancellationRequested();
+				Token.ThrowIfCancellationRequested();
 
 				GetFiles(d.FullName);
 			}
 
-			token.ThrowIfCancellationRequested();
+			Token.ThrowIfCancellationRequested();
 
 			try
 			{
 				var files = dirInfo.GetFiles();
+				resultFiles.AddRange(files.Where(file => isValid(file)));
 
-				foreach (var file in files)
-					if (isValid(file))
-						resultFiles.Add(file);
-
-				if (resultFiles.Count > 0)
-					OnFilesFound(resultFiles);
+				if (resultFiles.Count > 0) OnFilesFound(resultFiles);
 			}
-			catch (UnauthorizedAccessException)
-			{
-			}
-			catch (PathTooLongException)
-			{
-			}
-			catch (DirectoryNotFoundException)
-			{
-			}
+			catch (UnauthorizedAccessException) { }
+			catch (PathTooLongException) { }
+			catch (DirectoryNotFoundException) { }
 
 			return;
 		}
 
-
-
 		protected override List<DirectoryInfo> GetStartDirectories(string folder)
 		{
-			token.ThrowIfCancellationRequested();
+			Token.ThrowIfCancellationRequested();
 
 			DirectoryInfo[] directories;
 			var resultFiles = new List<FileInfo>();
@@ -105,37 +79,18 @@ namespace FastSearchLibrary
 				var dirInfo = new DirectoryInfo(folder);
 				directories = dirInfo.GetDirectories();
 
-				FileInfo[] files = dirInfo.GetFiles();
+				resultFiles.AddRange(dirInfo.GetFiles().Where(file => isValid(file)));
 
-				foreach (var file in files)
-					if (isValid(file))
-						resultFiles.Add(file);
+				if (resultFiles.Count > 0) OnFilesFound(resultFiles);
 
-				if (resultFiles.Count > 0)
-					OnFilesFound(resultFiles);
-
-				if (directories.Length > 1)
-					return new List<DirectoryInfo>(directories);
-
-				if (directories.Length == 0)
-					return new List<DirectoryInfo>();
+				if (directories.Length > 1) return new List<DirectoryInfo>(directories);
+				if (directories.Length == 0) return new List<DirectoryInfo>();
 			}
-			catch (UnauthorizedAccessException)
-			{
-				return new List<DirectoryInfo>();
-			}
-			catch (PathTooLongException)
-			{
-				return new List<DirectoryInfo>();
-			}
-			catch (DirectoryNotFoundException)
-			{
-				return new List<DirectoryInfo>();
-			}
+			catch (UnauthorizedAccessException) { return new List<DirectoryInfo>(); }
+			catch (PathTooLongException) { return new List<DirectoryInfo>(); }
+			catch (DirectoryNotFoundException) { return new List<DirectoryInfo>(); }
 
 			return GetStartDirectories(directories[0].FullName);
 		}
-
-
 	}
 }

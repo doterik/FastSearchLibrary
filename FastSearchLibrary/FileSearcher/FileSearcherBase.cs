@@ -1,5 +1,4 @@
-﻿//#pragma warning disable IDE0003 // Remove qualification
-//#pragma warning disable IDE0007 // Use implicit type
+﻿#pragma warning disable IDE0022 // Use expression body for methods
 
 using System;
 using System.Collections.Concurrent;
@@ -16,9 +15,7 @@ namespace FastSearchLibrary
 		/// Specifies where FilesFound event handlers are executed.
 		/// </summary>
 		protected ExecuteHandlers HandlerOption { get; }
-
 		protected string Folder { get; }
-
 		protected ConcurrentBag<Task> TaskHandlers { get; }
 
 		public FileSearcherBase(string folder, ExecuteHandlers handlerOption)
@@ -34,11 +31,11 @@ namespace FastSearchLibrary
 
 		protected virtual void GetFilesFast()
 		{
-			GetStartDirectories(Folder).AsParallel().ForAll((d) =>
+			GetStartDirectories(Folder).AsParallel().ForAll((d1) =>
 			{
-				GetStartDirectories(d.FullName).AsParallel().ForAll((dir) =>
+				GetStartDirectories(d1.FullName).AsParallel().ForAll((d2) =>
 				{
-					GetFiles(dir.FullName);
+					GetFiles(d2.FullName);
 				});
 			});
 
@@ -57,16 +54,10 @@ namespace FastSearchLibrary
 			}
 		}
 
-
 		protected virtual void CallFilesFound(List<FileInfo> files)
 		{
-			if (FilesFound != null)
-			{
-				var arg = new FileEventArgs(files);
-				FilesFound(this, arg);
-			}
+			FilesFound?.Invoke(this, new FileEventArgs(files));
 		}
-
 
 		protected virtual void OnSearchCompleted(bool isCanceled)
 		{
@@ -78,23 +69,13 @@ namespace FastSearchLibrary
 			CallSearchCompleted(isCanceled);
 		}
 
-
 		protected virtual void CallSearchCompleted(bool isCanceled)
 		{
-			if (SearchCompleted != null)
-			{
-				var arg = new SearchCompletedEventArgs(isCanceled);
-				SearchCompleted(this, arg);
-			}
+			SearchCompleted?.Invoke(this, new SearchCompletedEventArgs(isCanceled));
 		}
 
-
 		protected abstract void GetFiles(string folder);
-
-
 		protected abstract List<DirectoryInfo> GetStartDirectories(string folder);
-
-
 		public abstract void StartSearch();
 	}
 }
