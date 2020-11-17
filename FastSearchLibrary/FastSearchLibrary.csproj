@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <LangVersion>preview</LangVersion>
+    <Nullable>enable</Nullable>
     <Description>Multithreading library for fast file and directory search.</Description>
     <Authors>VladPVS</Authors>
     <Copyright>Copyright © VladPVS  2018</Copyright>

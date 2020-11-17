@@ -17,58 +17,54 @@ namespace FastSearchLibrary
 		/// <summary>
 		/// Determines where execute event DirectoriesFound handlers
 		/// </summary>
-		protected ExecuteHandlers HandlerOption { get; set; }
+		protected ExecuteHandlers HandlerOption { get;  }
 
-		private readonly string folder;
+		private string Folder { get; }
 
-		private readonly ConcurrentBag<Task> taskHandlers;
+		private ConcurrentBag<Task> TaskHandlers { get; }
 
-		protected CancellationToken token;
+		protected CancellationToken Token { get; }
 
 		protected bool SuppressOperationCanceledException { get; set; }
 
 		public DirectoryCancellationSearcherBase(string folder, ExecuteHandlers handlerOption, bool suppressOperationCanceledException, CancellationToken token)
 		{
-			this.folder = folder;
-			this.token = token;
+			this.Folder = folder;
+			this.Token = token;
 			this.HandlerOption = handlerOption;
 			this.SuppressOperationCanceledException = suppressOperationCanceledException;
-			taskHandlers = new ConcurrentBag<Task>();
+			TaskHandlers = new ConcurrentBag<Task>();
 		}
 
 
-		public event EventHandler<DirectoryEventArgs> DirectoriesFound;
+		public event EventHandler<DirectoryEventArgs>? DirectoriesFound;
 
-		public event EventHandler<SearchCompletedEventArgs> SearchCompleted;
+		public event EventHandler<SearchCompletedEventArgs>? SearchCompleted;
 
 
 		protected virtual void OnDirectoriesFound(List<DirectoryInfo> directories)
 		{
-			EventHandler<DirectoryEventArgs> handler = DirectoriesFound;
-
-			if (handler != null)
+			if (DirectoriesFound != null)
 			{
 				var arg = new DirectoryEventArgs(directories);
 
 				if (HandlerOption == ExecuteHandlers.InNewTask)
-					taskHandlers.Add(Task.Run(() => DirectoriesFound(this, arg), token));
+					TaskHandlers.Add(Task.Run(() => DirectoriesFound(this, arg), Token));
 				else
-					handler(this, arg);
+					DirectoriesFound(this, arg);
 			}
 		}
 
 
 		protected virtual void OnSearchCompleted(bool isCanceled)
 		{
-			EventHandler<SearchCompletedEventArgs> handler = SearchCompleted;
-
-			if (handler != null)
+			if (SearchCompleted != null)
 			{
 				if (HandlerOption == ExecuteHandlers.InNewTask)
 				{
 					try
 					{
-						Task.WaitAll(taskHandlers.ToArray());
+						Task.WaitAll(TaskHandlers.ToArray());
 					}
 					catch (AggregateException ex)
 					{
@@ -81,8 +77,7 @@ namespace FastSearchLibrary
 				}
 
 				var arg = new SearchCompletedEventArgs(isCanceled);
-
-				handler(this, arg);
+				SearchCompleted(this, arg);
 			}
 		}
 
@@ -102,7 +97,7 @@ namespace FastSearchLibrary
 				OnSearchCompleted(true); // isCanceled == true
 
 				if (!SuppressOperationCanceledException)
-					token.ThrowIfCancellationRequested();
+					Token.ThrowIfCancellationRequested();
 
 				return;
 			}
@@ -114,11 +109,11 @@ namespace FastSearchLibrary
 
 		protected virtual void GetDirectoriesFast()
 		{
-			List<DirectoryInfo> startDirs = GetStartDirectories(folder);
+			List<DirectoryInfo> startDirs = GetStartDirectories(Folder);
 
-			startDirs.AsParallel().WithCancellation(token).ForAll((d) =>
+			startDirs.AsParallel().WithCancellation(Token).ForAll((d) =>
 			{
-				GetStartDirectories(d.FullName).AsParallel().WithCancellation(token).ForAll((dir) =>
+				GetStartDirectories(d.FullName).AsParallel().WithCancellation(Token).ForAll((dir) =>
 				{
 					GetDirectories(dir.FullName);
 				});

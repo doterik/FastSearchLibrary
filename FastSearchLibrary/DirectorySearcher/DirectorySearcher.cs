@@ -447,8 +447,8 @@ namespace FastSearchLibrary
 
 		static private void GetDirectories(string folder, List<DirectoryInfo> result, string pattern)
 		{
-			DirectoryInfo dirInfo = null;
-			DirectoryInfo[] directories = null;
+			DirectoryInfo? dirInfo = null;
+			DirectoryInfo[]? directories = null;
 
 			try
 			{
@@ -488,8 +488,8 @@ namespace FastSearchLibrary
 
 		static private void GetDirectories(string folder, List<DirectoryInfo> result, Func<DirectoryInfo, bool> isValid)
 		{
-			DirectoryInfo dirInfo = null;
-			DirectoryInfo[] directories = null;
+			DirectoryInfo? dirInfo = null;
+			DirectoryInfo[]? directories = null;
 
 			try
 			{
@@ -536,8 +536,8 @@ namespace FastSearchLibrary
 
 		static private List<DirectoryInfo> GetStartDirectories(string folder, ConcurrentBag<DirectoryInfo> dirs, string pattern)
 		{
-			DirectoryInfo dirInfo = null;
-			DirectoryInfo[] directories = null;
+			DirectoryInfo? dirInfo = null;
+			DirectoryInfo[]? directories = null;
 			try
 			{
 				dirInfo = new DirectoryInfo(folder);
@@ -576,8 +576,8 @@ namespace FastSearchLibrary
 
 		static private List<DirectoryInfo> GetStartDirectories(string folder, ConcurrentBag<DirectoryInfo> dirs, Func<DirectoryInfo, bool> isValid)
 		{
-			DirectoryInfo dirInfo = null;
-			DirectoryInfo[] directories = null;
+			DirectoryInfo? dirInfo = null;
+			DirectoryInfo[]? directories = null;
 			try
 			{
 				dirInfo = new DirectoryInfo(folder);

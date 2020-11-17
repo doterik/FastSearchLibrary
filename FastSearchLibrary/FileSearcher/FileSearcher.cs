@@ -21,7 +21,7 @@ namespace FastSearchLibrary
 
 		private readonly FileSearcherBase searcher;
 
-		private readonly CancellationTokenSource tokenSource;
+		private readonly CancellationTokenSource? tokenSource;
 
 		/// <summary>
 		/// Event fires when next portion of files is found. Event handlers are not thread safe. 
@@ -327,7 +327,7 @@ namespace FastSearchLibrary
 				{
 					StartSearch();
 
-				}, tokenSource.Token);
+				}, tokenSource?.Token ?? default); // An empty cancellation token. (CancellationToken.None)
 			}
 
 			return Task.Run(() =>

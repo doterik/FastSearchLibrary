@@ -1,5 +1,5 @@
-﻿#pragma warning disable IDE0003 // Remove qualification
-#pragma warning disable IDE0007 // Use implicit type
+﻿//#pragma warning disable IDE0003 // Remove qualification
+//#pragma warning disable IDE0007 // Use implicit type
 
 using System;
 using System.Collections.Concurrent;
@@ -15,31 +15,26 @@ namespace FastSearchLibrary
 		/// <summary>
 		/// Specifies where FilesFound event handlers are executed.
 		/// </summary>
-		protected ExecuteHandlers HandlerOption { get; set; }
+		protected ExecuteHandlers HandlerOption { get; }
 
-		protected string folder;
+		protected string Folder { get; }
 
-		protected ConcurrentBag<Task> taskHandlers;
-
+		protected ConcurrentBag<Task> TaskHandlers { get; }
 
 		public FileSearcherBase(string folder, ExecuteHandlers handlerOption)
 		{
-			this.folder = folder;
-			this.HandlerOption = handlerOption;
-			taskHandlers = new ConcurrentBag<Task>();
+			Folder = folder;
+			HandlerOption = handlerOption;
+			TaskHandlers = new ConcurrentBag<Task>();
 		}
 
+		public event EventHandler<FileEventArgs>? FilesFound;
 
-		public event EventHandler<FileEventArgs> FilesFound;
-
-		public event EventHandler<SearchCompletedEventArgs> SearchCompleted;
-
+		public event EventHandler<SearchCompletedEventArgs>? SearchCompleted;
 
 		protected virtual void GetFilesFast()
 		{
-			List<DirectoryInfo> startDirs = GetStartDirectories(folder);
-
-			startDirs.AsParallel().ForAll((d) =>
+			GetStartDirectories(Folder).AsParallel().ForAll((d) =>
 			{
 				GetStartDirectories(d.FullName).AsParallel().ForAll((dir) =>
 				{
@@ -50,12 +45,11 @@ namespace FastSearchLibrary
 			OnSearchCompleted(false);
 		}
 
-
 		protected virtual void OnFilesFound(List<FileInfo> files)
 		{
 			if (HandlerOption == ExecuteHandlers.InNewTask)
 			{
-				taskHandlers.Add(Task.Run(() => CallFilesFound(files)));
+				TaskHandlers.Add(Task.Run(() => CallFilesFound(files)));
 			}
 			else
 			{
@@ -66,12 +60,10 @@ namespace FastSearchLibrary
 
 		protected virtual void CallFilesFound(List<FileInfo> files)
 		{
-			EventHandler<FileEventArgs> handler = FilesFound;
-
-			if (handler != null)
+			if (FilesFound != null)
 			{
 				var arg = new FileEventArgs(files);
-				handler(this, arg);
+				FilesFound(this, arg);
 			}
 		}
 
@@ -80,7 +72,7 @@ namespace FastSearchLibrary
 		{
 			if (HandlerOption == ExecuteHandlers.InNewTask)
 			{
-				Task.WaitAll(taskHandlers.ToArray());
+				Task.WaitAll(TaskHandlers.ToArray());
 			}
 
 			CallSearchCompleted(isCanceled);
@@ -89,13 +81,10 @@ namespace FastSearchLibrary
 
 		protected virtual void CallSearchCompleted(bool isCanceled)
 		{
-			EventHandler<SearchCompletedEventArgs> handler = SearchCompleted;
-
-			if (handler != null)
+			if (SearchCompleted != null)
 			{
 				var arg = new SearchCompletedEventArgs(isCanceled);
-
-				handler(this, arg);
+				SearchCompleted(this, arg);
 			}
 		}
 

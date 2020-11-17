@@ -1,5 +1,4 @@
-﻿#pragma warning disable IDE0007 // Use implicit type
-#pragma warning disable IDE0021 // Use expression body for constructors
+﻿#pragma warning disable IDE0021 // Use expression body for constructors
 #pragma warning disable IDE0022 // Use expression body for methods
 #pragma warning disable IDE0052 // Remove unread private members
 
@@ -46,7 +45,7 @@ namespace FastSearchLibrary
 		/// <summary>
 		/// Event fires when search process is completed or stopped.
 		/// </summary>
-		public event EventHandler<SearchCompletedEventArgs> SearchCompleted;
+		public event EventHandler<SearchCompletedEventArgs>? SearchCompleted;
 
 
 		/// <summary>
@@ -55,13 +54,10 @@ namespace FastSearchLibrary
 		/// <param name="isCanceled">Determines whether search process canceled.</param>
 		protected virtual void OnSearchCompleted(bool isCanceled)
 		{
-			EventHandler<SearchCompletedEventArgs> handler = SearchCompleted;
-
-			if (handler != null)
+			if (SearchCompleted != null)
 			{
 				var arg = new SearchCompletedEventArgs(isCanceled);
-
-				handler(this, arg);
+				SearchCompleted(this, arg);
 			}
 		}
 

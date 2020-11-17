@@ -20,7 +20,7 @@ namespace FastSearchLibrary
 
 		protected override void GetDirectories(string folder)
 		{
-			token.ThrowIfCancellationRequested();
+			Token.ThrowIfCancellationRequested();
 
 			DirectoryInfo[] directories;
 
@@ -47,12 +47,12 @@ namespace FastSearchLibrary
 
 			foreach (var dir in directories)
 			{
-				token.ThrowIfCancellationRequested();
+				Token.ThrowIfCancellationRequested();
 
 				GetDirectories(dir.FullName);
 			}
 
-			token.ThrowIfCancellationRequested();
+			Token.ThrowIfCancellationRequested();
 
 			try
 			{
@@ -81,7 +81,7 @@ namespace FastSearchLibrary
 
 		protected override List<DirectoryInfo> GetStartDirectories(string folder)
 		{
-			token.ThrowIfCancellationRequested();
+			Token.ThrowIfCancellationRequested();
 
 			DirectoryInfo[] directories;
 			var resultDirs = new List<DirectoryInfo>();

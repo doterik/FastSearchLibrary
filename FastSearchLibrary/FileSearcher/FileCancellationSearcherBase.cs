@@ -50,7 +50,7 @@ namespace FastSearchLibrary
 			var arg = new FileEventArgs(files);
 
 			if (HandlerOption == ExecuteHandlers.InNewTask)
-				taskHandlers.Add(Task.Run(() => CallFilesFound(files), token));
+				TaskHandlers.Add(Task.Run(() => CallFilesFound(files), token));
 			else
 				CallFilesFound(files);
 		}
@@ -62,7 +62,7 @@ namespace FastSearchLibrary
 			{
 				try
 				{
-					Task.WaitAll(taskHandlers.ToArray());
+					Task.WaitAll(TaskHandlers.ToArray());
 				}
 				catch (AggregateException ex)
 				{
@@ -82,7 +82,7 @@ namespace FastSearchLibrary
 
 		protected override void GetFilesFast()
 		{
-			List<DirectoryInfo> startDirs = GetStartDirectories(folder);
+			List<DirectoryInfo> startDirs = GetStartDirectories(Folder);
 
 			startDirs.AsParallel().WithCancellation(token).ForAll((d) =>
 			{

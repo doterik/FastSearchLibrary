@@ -24,7 +24,7 @@ namespace FastSearchLibrary
 		/// <summary>
 		/// Event fires when next portion of files is found. Event handlers are not thread safe. 
 		/// </summary>
-		public event EventHandler<FileEventArgs> FilesFound
+		public event EventHandler<FileEventArgs>? FilesFound
 		{
 			add
 			{
@@ -41,7 +41,7 @@ namespace FastSearchLibrary
 		/// <summary>
 		/// Event fires when search process is completed or stopped.
 		/// </summary>
-		public event EventHandler<SearchCompletedEventArgs> SearchCompleted;
+		public event EventHandler<SearchCompletedEventArgs>? SearchCompleted;
 
 
 
@@ -51,13 +51,10 @@ namespace FastSearchLibrary
 		/// <param name="isCanceled">Determines whether search process canceled.</param>
 		protected virtual void OnSearchCompleted(bool isCanceled)
 		{
-			EventHandler<SearchCompletedEventArgs> handler = SearchCompleted;
-
-			if (handler != null)
+			if (SearchCompleted != null)
 			{
 				var arg = new SearchCompletedEventArgs(isCanceled);
-
-				handler(this, arg);
+				SearchCompleted(this, arg);
 			}
 		}
 
