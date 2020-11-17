@@ -8,7 +8,7 @@ namespace FastSearchLibrary
 	internal class FilePatternSearcher : FileSearcherBase
 	{
 
-		private string pattern;
+		private readonly string pattern;
 
 		public FilePatternSearcher(string folder, string pattern, ExecuteHandlers handlerOption): base(folder, handlerOption)
 		{

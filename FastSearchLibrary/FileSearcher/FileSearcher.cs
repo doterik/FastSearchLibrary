@@ -16,9 +16,9 @@ namespace FastSearchLibrary
 	{
 		#region Instance members
 
-		private FileSearcherBase searcher;
+		private readonly FileSearcherBase searcher;
 
-		private CancellationTokenSource tokenSource;
+		private readonly CancellationTokenSource tokenSource;
 
 		/// <summary>
 		/// Event fires when next portion of files is found. Event handlers are not thread safe. 

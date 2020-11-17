@@ -16,9 +16,9 @@ namespace FastSearchLibrary
 	{
 		#region Instance members
 
-		private DirectoryCancellationSearcherBase searcher;
+		private readonly DirectoryCancellationSearcherBase searcher;
 
-		private CancellationTokenSource tokenSource;
+		private readonly CancellationTokenSource tokenSource;
 
 
 		/// <summary>

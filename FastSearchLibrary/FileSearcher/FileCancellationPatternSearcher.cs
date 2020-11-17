@@ -9,7 +9,7 @@ namespace FastSearchLibrary
 	internal class FileCancellationPatternSearcher : FileCancellationSearcherBase
 	{
 
-		private string pattern;
+		private readonly string pattern;
 
 		public FileCancellationPatternSearcher(string folder, string pattern, CancellationToken token, ExecuteHandlers handlerOption, bool suppressOperationCanceledException)
 			: base(folder, token, handlerOption, suppressOperationCanceledException)

@@ -8,7 +8,7 @@ namespace FastSearchLibrary
 	internal class DirectoryCancellationDelegateSearcher : DirectoryCancellationSearcherBase
 	{
 
-		private Func<DirectoryInfo, bool> isValid;
+		private readonly Func<DirectoryInfo, bool> isValid;
 
 		public DirectoryCancellationDelegateSearcher(string folder, Func<DirectoryInfo, bool> isValid, CancellationToken token, ExecuteHandlers handlerOption, bool suppressOperationCanceledException)
 			:base(folder, token, handlerOption, suppressOperationCanceledException)

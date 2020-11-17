@@ -7,7 +7,7 @@ namespace FastSearchLibrary
 {
 	internal class FileCancellationDelegateSearcher : FileCancellationSearcherBase
 	{
-		private Func<FileInfo, bool> isValid;
+		private readonly Func<FileInfo, bool> isValid;
 
 		public FileCancellationDelegateSearcher(string folder, Func<FileInfo, bool> isValid, CancellationToken token, ExecuteHandlers handlerOption, bool suppressOperationCanceledException)
 			: base(folder, token, handlerOption, suppressOperationCanceledException)

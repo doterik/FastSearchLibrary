@@ -7,7 +7,7 @@ namespace FastSearchLibrary
 	internal class FileDelegateSearcher: FileSearcherBase
 	{
 
-		private Func<FileInfo, bool> isValid = null;
+		private readonly Func<FileInfo, bool> isValid = null;
 
 		public FileDelegateSearcher(string folder, Func<FileInfo, bool> isValid, ExecuteHandlers handlerOption): base(folder, handlerOption)
 		{

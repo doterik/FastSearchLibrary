@@ -9,7 +9,7 @@ namespace FastSearchLibrary
 	internal class DirectoryCancellationPatternSearcher : DirectoryCancellationSearcherBase
 	{
 
-		private string pattern;
+		private readonly string pattern;
 
 		public DirectoryCancellationPatternSearcher(string folder, string pattern, CancellationToken token, ExecuteHandlers handlerOption, bool suppressOperationCanceledException)
 			: base(folder, token, handlerOption, suppressOperationCanceledException)

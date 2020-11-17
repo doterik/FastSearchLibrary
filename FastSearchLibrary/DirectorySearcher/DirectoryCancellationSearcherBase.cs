@@ -16,9 +16,9 @@ namespace FastSearchLibrary
 		/// </summary>
 		protected ExecuteHandlers handlerOption { get; set; }
 
-		private string folder;
+		private readonly string folder;
 
-		private ConcurrentBag<Task> taskHandlers;
+		private readonly ConcurrentBag<Task> taskHandlers;
 
 		protected CancellationToken token;
 

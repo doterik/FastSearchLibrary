@@ -13,11 +13,11 @@ namespace FastSearchLibrary
 		{
 			#region Instance members
 
-			private List<DirectoryCancellationSearcherBase> searchers;
+			private readonly List<DirectoryCancellationSearcherBase> searchers;
 
-			private CancellationTokenSource tokenSource;
+			private readonly CancellationTokenSource tokenSource;
 
-			private bool suppressOperationCanceledException;
+			private readonly bool suppressOperationCanceledException;
 
 
 			/// <summary>

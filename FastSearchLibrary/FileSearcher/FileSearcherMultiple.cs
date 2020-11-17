@@ -11,11 +11,11 @@ namespace FastSearchLibrary
 	/// </summary>
 	public class FileSearcherMultiple
 	{
-		private List<FileSearcherBase> searchers;
+		private readonly List<FileSearcherBase> searchers;
 
-		private CancellationTokenSource tokenSource;
+		private readonly CancellationTokenSource tokenSource;
 
-		private bool suppressOperationCanceledException;
+		private readonly bool suppressOperationCanceledException;
 
 
 		/// <summary>
