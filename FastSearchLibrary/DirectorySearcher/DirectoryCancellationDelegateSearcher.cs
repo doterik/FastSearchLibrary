@@ -10,8 +10,8 @@ namespace FastSearchLibrary
 
 		private readonly Func<DirectoryInfo, bool> isValid;
 
-		public DirectoryCancellationDelegateSearcher(string folder, Func<DirectoryInfo, bool> isValid, CancellationToken token, ExecuteHandlers handlerOption, bool suppressOperationCanceledException)
-			:base(folder, token, handlerOption, suppressOperationCanceledException)
+		public DirectoryCancellationDelegateSearcher(string folder, Func<DirectoryInfo, bool> isValid, ExecuteHandlers handlerOption, bool suppressOperationCanceledException, CancellationToken token)
+			: base(folder, handlerOption, suppressOperationCanceledException, token)
 		{
 			this.isValid = isValid;
 		}

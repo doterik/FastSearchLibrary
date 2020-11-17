@@ -155,7 +155,7 @@ namespace FastSearchLibrary
 
 			CheckTokenSource(tokenSource);
 
-			searcher = new FileCancellationPatternSearcher(folder, pattern, tokenSource.Token, handlerOption, suppressOperationCanceledException);
+			searcher = new FileCancellationPatternSearcher(folder, pattern, handlerOption, suppressOperationCanceledException, tokenSource.Token);
 			this.tokenSource = tokenSource;
 		}
 
@@ -224,7 +224,7 @@ namespace FastSearchLibrary
 
 			CheckTokenSource(tokenSource);
 
-			searcher = new FileCancellationDelegateSearcher(folder, isValid, tokenSource.Token, handlerOption, suppressOperationCanceledException);
+			searcher = new FileCancellationDelegateSearcher(folder, isValid, handlerOption, suppressOperationCanceledException, tokenSource.Token);
 			this.tokenSource = tokenSource;
 		}
 

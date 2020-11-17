@@ -24,7 +24,7 @@ namespace FastSearchLibrary
 
 		protected bool SuppressOperationCanceledException { get; set; }
 
-		public DirectoryCancellationSearcherBase(string folder, CancellationToken token, ExecuteHandlers handlerOption, bool suppressOperationCanceledException)
+		public DirectoryCancellationSearcherBase(string folder, ExecuteHandlers handlerOption, bool suppressOperationCanceledException, CancellationToken token)
 		{
 			this.folder = folder;
 			this.token = token;

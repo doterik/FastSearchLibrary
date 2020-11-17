@@ -86,7 +86,7 @@ namespace FastSearchLibrary
 
 				 foreach (var folder in folders)
 				 {
-					 searchers.Add(new DirectoryCancellationDelegateSearcher(folder, isValid, tokenSource.Token, handlerOption, false));
+					 searchers.Add(new DirectoryCancellationDelegateSearcher(folder, isValid, handlerOption, false, tokenSource.Token));
 				 }
 
 				 this.tokenSource = tokenSource;
@@ -151,7 +151,7 @@ namespace FastSearchLibrary
 
 				foreach (var folder in folders)
 				{
-					searchers.Add(new DirectoryCancellationPatternSearcher(folder, pattern, tokenSource.Token, handlerOption, false));
+					searchers.Add(new DirectoryCancellationPatternSearcher(folder, pattern, handlerOption, false, tokenSource.Token));
 				}
 
 				this.tokenSource = tokenSource;

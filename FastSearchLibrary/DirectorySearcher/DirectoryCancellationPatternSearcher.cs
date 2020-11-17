@@ -11,8 +11,8 @@ namespace FastSearchLibrary
 
 		private readonly string pattern;
 
-		public DirectoryCancellationPatternSearcher(string folder, string pattern, CancellationToken token, ExecuteHandlers handlerOption, bool suppressOperationCanceledException)
-			: base(folder, token, handlerOption, suppressOperationCanceledException)
+		public DirectoryCancellationPatternSearcher(string folder, string pattern, ExecuteHandlers handlerOption, bool suppressOperationCanceledException, CancellationToken token)
+			: base(folder, handlerOption, suppressOperationCanceledException, token)
 		{
 			this.pattern = pattern;
 		}
