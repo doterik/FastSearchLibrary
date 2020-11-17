@@ -267,7 +267,7 @@ namespace FastSearchLibrary
 			if (folder == null)
 				throw new ArgumentNullException(nameof(folder), "Argument is null.");
 			  
-			if (folder == String.Empty)
+			if (folder == string.Empty)
 				throw new ArgumentException("Argument is not valid.", nameof(folder));
 
 			DirectoryInfo dir = new DirectoryInfo(folder);
@@ -282,7 +282,7 @@ namespace FastSearchLibrary
 			if (pattern == null)
 				throw new ArgumentNullException(nameof(pattern), "Argument is null.");
 
-			if (pattern == String.Empty)
+			if (pattern == string.Empty)
 				throw new ArgumentException("Argument is not valid.", nameof(pattern));
 		}
 
