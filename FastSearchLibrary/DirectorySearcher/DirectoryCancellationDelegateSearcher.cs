@@ -22,10 +22,11 @@ namespace FastSearchLibrary
 		{
 			Token.ThrowIfCancellationRequested();
 
+			DirectoryInfo dirInfo;
 			DirectoryInfo[] directories;
 			try
 			{
-				var dirInfo = new DirectoryInfo(folder);
+				dirInfo = new DirectoryInfo(folder);
 				directories = dirInfo.GetDirectories();
 
 				if (directories.Length == 0) return;
@@ -34,22 +35,18 @@ namespace FastSearchLibrary
 			catch (PathTooLongException) { return; }
 			catch (DirectoryNotFoundException) { return; }
 
-
-			foreach (var dir in directories)
+			foreach (var d in directories)
 			{
 				Token.ThrowIfCancellationRequested();
 
-				GetDirectories(dir.FullName);
+				GetDirectories(d.FullName);
 			}
 
 			Token.ThrowIfCancellationRequested();
 
 			try
 			{
-				var resultDirs = (directories.Where(dir => isValid(dir))).ToList();
-
-				if (resultDirs.Count > 0) OnDirectoriesFound(resultDirs);
-
+				OnDirectoriesFound(directories.Where(dir => isValid(dir)).ToList()); // 'isValid'
 			}
 			catch (UnauthorizedAccessException) { }
 			catch (PathTooLongException) { }
@@ -60,34 +57,28 @@ namespace FastSearchLibrary
 		{
 			Token.ThrowIfCancellationRequested();
 
+			DirectoryInfo dirInfo;
 			DirectoryInfo[] directories;
-			var resultDirs = new List<DirectoryInfo>();
 			try
 			{
-				var dirInfo = new DirectoryInfo(folder);
+				dirInfo = new DirectoryInfo(folder);
 				directories = dirInfo.GetDirectories();
 
 				if (directories.Length > 1)
 				{
-					resultDirs.AddRange(directories.Where(dir => isValid(dir)));
-
-					if (resultDirs.Count > 0) OnDirectoriesFound(resultDirs);
+					OnDirectoriesFound(directories.Where(dir => isValid(dir)).ToList()); // 'isValid'
 
 					return new List<DirectoryInfo>(directories);
 				}
 
-				if (directories.Length == 0) return new List<DirectoryInfo>();
-
+				if (directories.Length == 0) return new();
 			}
-			catch (UnauthorizedAccessException) { return new List<DirectoryInfo>(); }
-			catch (PathTooLongException) { return new List<DirectoryInfo>(); }
-			catch (DirectoryNotFoundException) { return new List<DirectoryInfo>(); }
+			catch (UnauthorizedAccessException) { return new(); }
+			catch (PathTooLongException) { return new(); }
+			catch (DirectoryNotFoundException) { return new(); }
 
 			// if directories.Length == 1
-			foreach (var dir in directories.Where(dir => isValid(dir)))
-			{
-				OnDirectoriesFound(new List<DirectoryInfo> { dir });
-			}
+			OnDirectoriesFound(directories.Where(dir => isValid(dir)).ToList()); // 'isValid'
 
 			return GetStartDirectories(directories[0].FullName);
 		}

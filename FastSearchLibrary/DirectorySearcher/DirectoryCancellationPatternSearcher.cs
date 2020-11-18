@@ -35,7 +35,6 @@ namespace FastSearchLibrary
 			catch (PathTooLongException) { return; }
 			catch (DirectoryNotFoundException) { return; }
 
-
 			foreach (var d in directories)
 			{
 				Token.ThrowIfCancellationRequested();
@@ -43,13 +42,11 @@ namespace FastSearchLibrary
 				GetDirectories(d.FullName);
 			}
 
-
 			Token.ThrowIfCancellationRequested();
 
 			try
 			{
-				var resultDirs = dirInfo.GetDirectories(pattern);
-				if (resultDirs.Length > 0) OnDirectoriesFound(resultDirs.ToList());
+				OnDirectoriesFound(dirInfo.GetDirectories(pattern).ToList()); // 'pattern'
 			}
 			catch (UnauthorizedAccessException) { }
 			catch (PathTooLongException) { }
@@ -62,7 +59,6 @@ namespace FastSearchLibrary
 
 			DirectoryInfo dirInfo;
 			DirectoryInfo[] directories;
-			DirectoryInfo[] resultDirs;
 			try
 			{
 				dirInfo = new DirectoryInfo(folder);
@@ -70,22 +66,19 @@ namespace FastSearchLibrary
 
 				if (directories.Length > 1)
 				{
-					resultDirs = dirInfo.GetDirectories(pattern);
-					if (resultDirs.Length > 0) OnDirectoriesFound(resultDirs.ToList());
+					OnDirectoriesFound(dirInfo.GetDirectories(pattern).ToList()); // 'pattern'
 
 					return new List<DirectoryInfo>(directories);
 				}
 
-				if (directories.Length == 0) return new List<DirectoryInfo>();
-
+				if (directories.Length == 0) return new();
 			}
-			catch (UnauthorizedAccessException) { return new List<DirectoryInfo>(); }
-			catch (PathTooLongException) { return new List<DirectoryInfo>(); }
-			catch (DirectoryNotFoundException) { return new List<DirectoryInfo>(); }
+			catch (UnauthorizedAccessException) { return new(); }
+			catch (PathTooLongException) { return new(); }
+			catch (DirectoryNotFoundException) { return new(); }
 
 			// if directories.Length == 1
-			resultDirs = dirInfo.GetDirectories(pattern);
-			if (resultDirs.Length > 0) OnDirectoriesFound(resultDirs.ToList());
+			OnDirectoriesFound(dirInfo.GetDirectories(pattern).ToList()); // 'pattern'
 
 			return GetStartDirectories(directories[0].FullName);
 		}
