@@ -1,4 +1,4 @@
-﻿#pragma warning disable IDE0007 // Use implicit type
+﻿#pragma warning disable IDE0022 // Use expression body for methods
 
 using System;
 using System.Collections.Generic;
@@ -41,10 +41,10 @@ namespace FastSearchLibrary
 
 		protected override void OnFilesFound(List<FileInfo> files)
 		{
-			var arg = new FileEventArgs(files); // TODO arg !?
+			// var arg = new FileEventArgs(files); // TODO arg !?
 
 			if (HandlerOption == ExecuteHandlers.InNewTask)
-				TaskHandlers.Add(Task.Run(() => CallFilesFound(files), Token));
+				TaskHandlers.Add(Task.Run(() => CallFilesFound(files), Token)); /* ,Token */
 			else
 				CallFilesFound(files);
 		}
@@ -57,22 +57,18 @@ namespace FastSearchLibrary
 				{
 					Task.WaitAll(TaskHandlers.ToArray());
 				}
-				catch (AggregateException ex)
+				catch (AggregateException ex) when (ex.InnerException is TaskCanceledException)
 				{
-					if (!(ex.InnerException is TaskCanceledException)) throw;
-
-					if (!isCanceled) isCanceled = true;
+					isCanceled = true;
 				}
-
-				CallSearchCompleted(isCanceled); // TODO =else
 			}
-			else
-				CallSearchCompleted(isCanceled);
+
+			CallSearchCompleted(isCanceled); // else
 		}
 
-		protected override void GetFilesFast()
+		protected override void GetFilesFast() /* .WithCancellation(Token) */
 		{
-			List<DirectoryInfo> startDirs = GetStartDirectories(Folder);
+			// List<DirectoryInfo> startDirs = GetStartDirectories(Folder);
 
 			GetStartDirectories(Folder).AsParallel().WithCancellation(Token).ForAll((d1) =>
 			{

@@ -1,5 +1,4 @@
-﻿//#pragma warning disable IDE0007 // Use implicit type
-#pragma warning disable IDE0021 // Use expression body for constructors
+﻿#pragma warning disable IDE0021 // Use expression body for constructors
 
 using System;
 using System.Collections.Generic;
@@ -60,6 +59,7 @@ namespace FastSearchLibrary
 				resultFiles.AddRange(files.Where(file => isValid(file)));
 
 				if (resultFiles.Count > 0) OnFilesFound(resultFiles);
+				// if (resultFiles.Count > 0) OnFilesFound(files.Where(file => isValid(file)).ToList()); // TODO
 			}
 			catch (UnauthorizedAccessException) { }
 			catch (PathTooLongException) { }

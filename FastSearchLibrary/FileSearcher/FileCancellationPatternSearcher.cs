@@ -18,7 +18,6 @@ namespace FastSearchLibrary
 			this.pattern = pattern;
 		}
 
-
 		protected override void GetFiles(string folder)
 		{
 			Token.ThrowIfCancellationRequested();
@@ -32,8 +31,7 @@ namespace FastSearchLibrary
 
 				if (directories.Length == 0)
 				{
-					var resFiles = dirInfo.GetFiles(pattern);
-					if (resFiles.Length > 0) OnFilesFound(resFiles.ToList());
+					GetFilesFrom(dirInfo);
 
 					return;
 				}
@@ -53,8 +51,7 @@ namespace FastSearchLibrary
 
 			try
 			{
-				var resFiles = dirInfo.GetFiles(pattern);
-				if (resFiles.Length > 0) OnFilesFound(resFiles.ToList());
+				GetFilesFrom(dirInfo);
 			}
 			catch (UnauthorizedAccessException) { }
 			catch (PathTooLongException) { }
@@ -71,8 +68,7 @@ namespace FastSearchLibrary
 				var dirInfo = new DirectoryInfo(folder);
 				directories = dirInfo.GetDirectories();
 
-				var resFiles = dirInfo.GetFiles(pattern);
-				if (resFiles.Length > 0) OnFilesFound(resFiles.ToList());
+				GetFilesFrom(dirInfo);
 
 				if (directories.Length > 1) return new List<DirectoryInfo>(directories);
 				if (directories.Length == 0) return new List<DirectoryInfo>();
@@ -81,7 +77,13 @@ namespace FastSearchLibrary
 			catch (PathTooLongException) { return new List<DirectoryInfo>(); }
 			catch (DirectoryNotFoundException) { return new List<DirectoryInfo>(); }
 
-			return GetStartDirectories(directories[0].FullName);
+			return GetStartDirectories(directories[0].FullName); // directories.Length == 1
+		}
+
+		private void GetFilesFrom(DirectoryInfo dirInfo)
+		{
+			var resFiles = dirInfo.GetFiles(pattern);
+			if (resFiles.Length > 0) OnFilesFound(resFiles.ToList());
 		}
 	}
 }
