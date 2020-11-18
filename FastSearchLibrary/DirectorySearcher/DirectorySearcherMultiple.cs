@@ -13,7 +13,7 @@ namespace FastSearchLibrary
 	/// <summary>
 	/// Represents a class for fast directory search in multiple directories.
 	/// </summary>
-	public class DirectorySearcherMultiple
+	public class DirectorySearcherMultiple : FileBase
 	{
 		#region Instance members
 
@@ -24,16 +24,13 @@ namespace FastSearchLibrary
 		private readonly bool suppressOperationCanceledException;
 		private readonly ExecuteHandlers handlerOption;
 
-
 		/// <summary>
 		/// Event fires when next portion of directories is found. Event handlers are not thread safe. 
 		/// </summary>
 		public event EventHandler<DirectoryEventArgs> DirectoriesFound
 		{
-			add
-			{ searchers.ForEach((s) => s.DirectoriesFound += value); }
-			remove
-			{ searchers.ForEach((s) => s.DirectoriesFound -= value); }
+			add { searchers.ForEach((s) => s.DirectoriesFound += value); }
+			remove { searchers.ForEach((s) => s.DirectoriesFound -= value); }
 		}
 
 		/// <summary>
@@ -50,109 +47,17 @@ namespace FastSearchLibrary
 			SearchCompleted?.Invoke(this, new SearchCompletedEventArgs(isCanceled));
 		}
 
-		#region DirectoryCancellationDelegateSearcher constructors
-
-		/// <summary>
-		/// Initialize a new instance of DirectorySearcherMultiple class.
-		/// </summary>
-		/// <param name="folders">Start search directories.</param>
-		/// <param name="isValid">The delegate that determines algorithm of directory selection.</param>
-		/// <param name="tokenSource">Instance of CancellationTokenSource for search process cancellation possibility.</param>
-		/// <param name="handlerOption">Specifies where DirectoriesFound event handlers are executed.</param>
-		/// <param name="suppressOperationCanceledException">Determines whether necessary suppress OperationCanceledException if it possible.</param>
-		/// <exception cref="ArgumentException"></exception>
-		/// <exception cref="ArgumentNullException"></exception>
-		public DirectorySearcherMultiple(List<string> folders, Func<DirectoryInfo, bool> isValid, CancellationTokenSource tokenSource, ExecuteHandlers handlerOption, bool suppressOperationCanceledException)
-		{
-			CheckFolders(folders);
-
-			CheckDelegate(isValid);
-
-			CheckTokenSource(tokenSource);
-
-			searchers = new List<DirectoryCancellationSearcherBase>();
-
-			this.suppressOperationCanceledException = suppressOperationCanceledException;
-
-			foreach (var folder in folders)
-			{
-				searchers.Add(new DirectoryCancellationDelegateSearcher(folder, isValid, handlerOption, false, tokenSource.Token));
-			}
-
-			this.tokenSource = tokenSource;
-		}
-
-		/// <summary>
-		/// Initialize a new instance of DirectorySearcherMultiple class.
-		/// </summary>
-		/// <param name="folders">Start search directories.</param>
-		/// <param name="isValid">The delegate that determines algorithm of directory selection.</param>
-		/// <param name="tokenSource">Instance of CancellationTokenSource for search process cancellation possibility.</param>
-		/// <param name="handlerOption">Specifies where DirectoriesFound event handlers are executed.</param>
-		/// <exception cref="ArgumentException"></exception>
-		/// <exception cref="ArgumentNullException"></exception>
-		public DirectorySearcherMultiple(List<string> folders, Func<DirectoryInfo, bool> isValid, CancellationTokenSource tokenSource, ExecuteHandlers handlerOption)
-			: this(folders, isValid, tokenSource, ExecuteHandlers.InCurrentTask, true)
-		{
-			this.handlerOption = handlerOption;
-		}
-
-		/// <summary>
-		/// Initialize a new instance of DirectorySearcherMultiple class.
-		/// </summary>
-		/// <param name="folders">Start search directories.</param>
-		/// <param name="isValid">The delegate that determines algorithm of directory selection.</param>
-		/// <param name="tokenSource">Instance of CancellationTokenSource for search process cancellation possibility.</param>
-		/// <exception cref="ArgumentException"></exception>
-		/// <exception cref="ArgumentNullException"></exception>
-		public DirectorySearcherMultiple(List<string> folders, Func<DirectoryInfo, bool> isValid, CancellationTokenSource tokenSource)
-			: this(folders, isValid, tokenSource, ExecuteHandlers.InCurrentTask, true) { }
-
-		#endregion
-
 		#region DirectoryCancellationPatternSearcher constructors
 
 		/// <summary>
 		/// Initialize a new instance of DirectorySearchMultiple class. 
 		/// </summary>
 		/// <param name="folders">Start search directories.</param>
-		/// <param name="pattern">The search pattern.</param>
 		/// <param name="tokenSource">Instance of CancellationTokenSource for search process cancellation possibility.</param>
-		/// <param name="handlerOption">Specifies where DirectoriesFound event handlers are executed.</param>
-		/// <param name="suppressOperationCanceledException">Determines whether necessary suppress OperationCanceledException if it possible.</param>
 		/// <exception cref="ArgumentException"></exception>
 		/// <exception cref="ArgumentNullException"></exception>
-		public DirectorySearcherMultiple(List<string> folders, string pattern, CancellationTokenSource tokenSource, ExecuteHandlers handlerOption, bool suppressOperationCanceledException)
-		{
-			CheckFolders(folders);
-
-			CheckPattern(pattern);
-
-			CheckTokenSource(tokenSource);
-
-			searchers = new List<DirectoryCancellationSearcherBase>();
-
-			this.suppressOperationCanceledException = suppressOperationCanceledException;
-
-			foreach (var folder in folders)
-			{
-				searchers.Add(new DirectoryCancellationPatternSearcher(folder, pattern, handlerOption, false, tokenSource.Token));
-			}
-
-			this.tokenSource = tokenSource;
-		}
-
-		/// <summary>
-		/// Initialize a new instance of DirectorySearchMultiple class. 
-		/// </summary>
-		/// <param name="folders">Start search directories.</param>
-		/// <param name="pattern">The search pattern.</param>
-		/// <param name="tokenSource">Instance of CancellationTokenSource for search process cancellation possibility.</param>
-		/// <param name="handlerOption">Specifies where DirectoriesFound event handlers are executed.</param>
-		/// <exception cref="ArgumentException"></exception>
-		/// <exception cref="ArgumentNullException"></exception>
-		public DirectorySearcherMultiple(List<string> folders, string pattern, CancellationTokenSource tokenSource, ExecuteHandlers handlerOption)
-			: this(folders, pattern, tokenSource, handlerOption, true) { }
+		public DirectorySearcherMultiple(List<string> folders, CancellationTokenSource tokenSource)
+			: this(folders, "*", ExecuteHandlers.InCurrentTask, true, tokenSource) { }
 
 		/// <summary>
 		/// Initialize a new instance of DirectorySearchMultiple class. 
@@ -163,57 +68,102 @@ namespace FastSearchLibrary
 		/// <exception cref="ArgumentException"></exception>
 		/// <exception cref="ArgumentNullException"></exception>
 		public DirectorySearcherMultiple(List<string> folders, string pattern, CancellationTokenSource tokenSource)
-			: this(folders, pattern, tokenSource, ExecuteHandlers.InCurrentTask, true) { }
+			: this(folders, pattern, ExecuteHandlers.InCurrentTask, true, tokenSource) { }
 
 		/// <summary>
 		/// Initialize a new instance of DirectorySearchMultiple class. 
 		/// </summary>
 		/// <param name="folders">Start search directories.</param>
+		/// <param name="pattern">The search pattern.</param>
+		/// <param name="handlerOption">Specifies where DirectoriesFound event handlers are executed.</param>
 		/// <param name="tokenSource">Instance of CancellationTokenSource for search process cancellation possibility.</param>
 		/// <exception cref="ArgumentException"></exception>
 		/// <exception cref="ArgumentNullException"></exception>
-		public DirectorySearcherMultiple(List<string> folders, CancellationTokenSource tokenSource)
-			: this(folders, "*", tokenSource, ExecuteHandlers.InCurrentTask, true)
+		public DirectorySearcherMultiple(List<string> folders, string pattern, ExecuteHandlers handlerOption, CancellationTokenSource tokenSource)
+			: this(folders, pattern, handlerOption, true, tokenSource) { }
+
+		/// <summary>
+		/// Initialize a new instance of DirectorySearchMultiple class. 
+		/// </summary>
+		/// <param name="folders">Start search directories.</param>
+		/// <param name="pattern">The search pattern.</param>
+		/// <param name="handlerOption">Specifies where DirectoriesFound event handlers are executed.</param>
+		/// <param name="suppressOperationCanceledException">Determines whether necessary suppress OperationCanceledException if it possible.</param>
+		/// <param name="tokenSource">Instance of CancellationTokenSource for search process cancellation possibility.</param>
+		/// <exception cref="ArgumentException"></exception>
+		/// <exception cref="ArgumentNullException"></exception>
+		public DirectorySearcherMultiple(List<string> folders, string pattern, ExecuteHandlers handlerOption, bool suppressOperationCanceledException, CancellationTokenSource tokenSource)
 		{
+			CheckFolders(folders);
+			CheckPattern(pattern);
+			CheckTokenSource(tokenSource);
+
+			searchers = new List<DirectoryCancellationSearcherBase>();
+			this.suppressOperationCanceledException = suppressOperationCanceledException;
+
+			foreach (var folder in folders)
+			{
+				searchers.Add(new DirectoryCancellationPatternSearcher(folder, pattern, handlerOption, false, tokenSource.Token));
+			}
+
+			this.tokenSource = tokenSource;
 		}
 
 		#endregion
 
-		#region Checking methods
+		#region DirectoryCancellationDelegateSearcher constructors
 
-		private static void CheckFolders(List<string> folders)
+		/// <summary>
+		/// Initialize a new instance of DirectorySearcherMultiple class.
+		/// </summary>
+		/// <param name="folders">Start search directories.</param>
+		/// <param name="isValid">The delegate that determines algorithm of directory selection.</param>
+		/// <param name="tokenSource">Instance of CancellationTokenSource for search process cancellation possibility.</param>
+		/// <exception cref="ArgumentException"></exception>
+		/// <exception cref="ArgumentNullException"></exception>
+		public DirectorySearcherMultiple(List<string> folders, Func<DirectoryInfo, bool> isValid, CancellationTokenSource tokenSource)
+			: this(folders, isValid, ExecuteHandlers.InCurrentTask, true, tokenSource) { }
+
+		/// <summary>
+		/// Initialize a new instance of DirectorySearcherMultiple class.
+		/// </summary>
+		/// <param name="folders">Start search directories.</param>
+		/// <param name="isValid">The delegate that determines algorithm of directory selection.</param>
+		/// <param name="handlerOption">Specifies where DirectoriesFound event handlers are executed.</param>
+		/// <param name="tokenSource">Instance of CancellationTokenSource for search process cancellation possibility.</param>
+		/// <exception cref="ArgumentException"></exception>
+		/// <exception cref="ArgumentNullException"></exception>
+		public DirectorySearcherMultiple(List<string> folders, Func<DirectoryInfo, bool> isValid, ExecuteHandlers handlerOption, CancellationTokenSource tokenSource)
+			: this(folders, isValid, ExecuteHandlers.InCurrentTask, true, tokenSource)
 		{
-			if (folders == null) throw new ArgumentNullException(nameof(folders), "Argument is null.");
-			if (folders.Count == 0) throw new ArgumentException("Argument is an empty list.", nameof(folders));
-
-			foreach (var folder in folders) CheckFolder(folder);
+			this.handlerOption = handlerOption;
 		}
 
-		private static void CheckFolder(string folder)
+		/// <summary>
+		/// Initialize a new instance of DirectorySearcherMultiple class.
+		/// </summary>
+		/// <param name="folders">Start search directories.</param>
+		/// <param name="isValid">The delegate that determines algorithm of directory selection.</param>
+		/// <param name="handlerOption">Specifies where DirectoriesFound event handlers are executed.</param>
+		/// <param name="suppressOperationCanceledException">Determines whether necessary suppress OperationCanceledException if it possible.</param>
+		/// <param name="tokenSource">Instance of CancellationTokenSource for search process cancellation possibility.</param>
+		/// <exception cref="ArgumentException"></exception>
+		/// <exception cref="ArgumentNullException"></exception>
+		public DirectorySearcherMultiple(List<string> folders, Func<DirectoryInfo, bool> isValid, ExecuteHandlers handlerOption, bool suppressOperationCanceledException, CancellationTokenSource tokenSource)
 		{
-			if (folder == null) throw new ArgumentNullException(nameof(folder), "Argument is null.");
-			if (folder == string.Empty) throw new ArgumentException("Argument is not valid.", nameof(folder));
+			CheckFolders(folders);
+			CheckDelegate(isValid);
+			CheckTokenSource(tokenSource);
 
-			var dir = new DirectoryInfo(folder);
+			searchers = new List<DirectoryCancellationSearcherBase>();
+			this.suppressOperationCanceledException = suppressOperationCanceledException;
 
-			if (!dir.Exists) throw new ArgumentException("Argument does not represent an existing directory.", nameof(folder));
-		}
+			foreach (var folder in folders)
+			{
+				searchers.Add(new DirectoryCancellationDelegateSearcher(folder, isValid, handlerOption, false, tokenSource.Token));
+			}
 
-		private static void CheckPattern(string pattern)
-		{
-			if (pattern == null) throw new ArgumentNullException(nameof(pattern), "Argument is null.");
-
-			if (pattern == string.Empty) throw new ArgumentException("Argument is not valid.", nameof(pattern));
-		}
-
-		private static void CheckDelegate(Func<DirectoryInfo, bool> isValid)
-		{
-			if (isValid == null) throw new ArgumentNullException(nameof(isValid), "Argument is null.");
-		}
-
-		private static void CheckTokenSource(CancellationTokenSource tokenSource)
-		{
-			if (tokenSource == null) throw new ArgumentNullException(nameof(tokenSource), "Argument is null.");
+			this.tokenSource = tokenSource;
 		}
 
 		#endregion
@@ -225,10 +175,7 @@ namespace FastSearchLibrary
 		{
 			try
 			{
-				searchers.ForEach(s =>
-				{
-					s.StartSearch();
-				});
+				searchers.ForEach(s => s.StartSearch());
 			}
 			catch (OperationCanceledException)
 			{
@@ -245,13 +192,8 @@ namespace FastSearchLibrary
 		/// </summary>
 		public Task StartSearchAsync()
 		{
-			return Task.Run(() =>
-			{
-				StartSearch();
-
-			}, tokenSource.Token);
+			return Task.Run(() => StartSearch(), tokenSource.Token);
 		}
-
 
 		/// <summary>
 		/// Stops a directory search operation.
