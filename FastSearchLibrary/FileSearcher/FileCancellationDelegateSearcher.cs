@@ -3,8 +3,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading;
 using System.Linq;
+using System.Threading;
 
 namespace FastSearchLibrary
 {
@@ -24,7 +24,6 @@ namespace FastSearchLibrary
 
 			DirectoryInfo dirInfo;
 			DirectoryInfo[] directories;
-			var resultFiles = new List<FileInfo>();
 			try
 			{
 				dirInfo = new DirectoryInfo(folder);
@@ -32,17 +31,13 @@ namespace FastSearchLibrary
 
 				if (directories.Length == 0)
 				{
-					resultFiles.AddRange(dirInfo.GetFiles().Where(file => isValid(file)));
-
-					if (resultFiles.Count > 0) OnFilesFound(resultFiles);
-
+					OnFilesFound(dirInfo.GetFiles().Where(file => isValid(file)).ToList()); // 'isValid'
 					return;
 				}
 			}
 			catch (UnauthorizedAccessException) { return; }
 			catch (PathTooLongException) { return; }
 			catch (DirectoryNotFoundException) { return; }
-
 
 			foreach (var d in directories)
 			{
@@ -55,17 +50,11 @@ namespace FastSearchLibrary
 
 			try
 			{
-				var files = dirInfo.GetFiles();
-				resultFiles.AddRange(files.Where(file => isValid(file)));
-
-				if (resultFiles.Count > 0) OnFilesFound(resultFiles);
-				// if (resultFiles.Count > 0) OnFilesFound(files.Where(file => isValid(file)).ToList()); // TODO
+				OnFilesFound(dirInfo.GetFiles().Where(file => isValid(file)).ToList()); // 'isValid'
 			}
 			catch (UnauthorizedAccessException) { }
 			catch (PathTooLongException) { }
 			catch (DirectoryNotFoundException) { }
-
-			return;
 		}
 
 		protected override List<DirectoryInfo> GetStartDirectories(string folder)
@@ -73,24 +62,21 @@ namespace FastSearchLibrary
 			Token.ThrowIfCancellationRequested();
 
 			DirectoryInfo[] directories;
-			var resultFiles = new List<FileInfo>();
 			try
 			{
 				var dirInfo = new DirectoryInfo(folder);
 				directories = dirInfo.GetDirectories();
 
-				resultFiles.AddRange(dirInfo.GetFiles().Where(file => isValid(file)));
-
-				if (resultFiles.Count > 0) OnFilesFound(resultFiles);
+				OnFilesFound(dirInfo.GetFiles().Where(file => isValid(file)).ToList()); // 'isValid'
 
 				if (directories.Length > 1) return new List<DirectoryInfo>(directories);
-				if (directories.Length == 0) return new List<DirectoryInfo>();
+				if (directories.Length == 0) return new();
 			}
-			catch (UnauthorizedAccessException) { return new List<DirectoryInfo>(); }
-			catch (PathTooLongException) { return new List<DirectoryInfo>(); }
-			catch (DirectoryNotFoundException) { return new List<DirectoryInfo>(); }
+			catch (UnauthorizedAccessException) { return new(); }
+			catch (PathTooLongException) { return new(); }
+			catch (DirectoryNotFoundException) { return new(); }
 
-			return GetStartDirectories(directories[0].FullName);
+			return GetStartDirectories(directories[0].FullName); // directories.Length == 1
 		}
 	}
 }
