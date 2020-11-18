@@ -21,6 +21,17 @@ namespace FastSearchLibrary
 			SuppressOperationCanceledException = suppressOperationCanceledException;
 		}
 
+		protected override void GetFilesFast() /* .WithCancellation(Token) */
+		{
+			GetStartDirectories(Folder).AsParallel().WithCancellation(Token).ForAll((d1) =>
+			{
+				GetStartDirectories(d1.FullName).AsParallel().WithCancellation(Token).ForAll((d2) =>
+				{
+					GetFiles(d2.FullName);
+				});
+			});
+		}
+
 		public override void StartSearch()
 		{
 			try
@@ -41,12 +52,16 @@ namespace FastSearchLibrary
 
 		protected override void OnFilesFound(List<FileInfo> files)
 		{
-			// var arg = new FileEventArgs(files); // TODO arg !?
+			if (files.Count == 0) return;
 
 			if (HandlerOption == ExecuteHandlers.InNewTask)
+			{
 				TaskHandlers.Add(Task.Run(() => CallFilesFound(files), Token)); /* ,Token */
+			}
 			else
+			{
 				CallFilesFound(files);
+			}
 		}
 
 		protected override void OnSearchCompleted(bool isCanceled)
@@ -64,19 +79,6 @@ namespace FastSearchLibrary
 			}
 
 			CallSearchCompleted(isCanceled); // else
-		}
-
-		protected override void GetFilesFast() /* .WithCancellation(Token) */
-		{
-			// List<DirectoryInfo> startDirs = GetStartDirectories(Folder);
-
-			GetStartDirectories(Folder).AsParallel().WithCancellation(Token).ForAll((d1) =>
-			{
-				GetStartDirectories(d1.FullName).AsParallel().WithCancellation(Token).ForAll((d2) =>
-				{
-					GetFiles(d2.FullName);
-				});
-			});
 		}
 	}
 }

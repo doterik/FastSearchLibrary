@@ -111,7 +111,7 @@ namespace FastSearchLibrary
 		/// <exception cref="ArgumentException"></exception>
 		/// <exception cref="ArgumentNullException"></exception>
 		public DirectorySearcher(string folder, Func<DirectoryInfo, bool> isValid, CancellationTokenSource tokenSource)
-			: this(folder, isValid, tokenSource, ExecuteHandlers.InCurrentTask, true) { }
+			: this(folder, isValid, ExecuteHandlers.InCurrentTask, true, tokenSource) { }
 
 		/// <summary>
 		/// Initialize a new instance of DirectorySearch class.
@@ -123,7 +123,7 @@ namespace FastSearchLibrary
 		/// <exception cref="ArgumentException"></exception>
 		/// <exception cref="ArgumentNullException"></exception>
 		public DirectorySearcher(string folder, Func<DirectoryInfo, bool> isValid, ExecuteHandlers handlerOption, CancellationTokenSource tokenSource)
-			: this(folder, isValid, tokenSource, ExecuteHandlers.InCurrentTask, true)
+			: this(folder, isValid, ExecuteHandlers.InCurrentTask, true, tokenSource)
 		{
 			this.handlerOption = handlerOption;
 		}
@@ -133,12 +133,12 @@ namespace FastSearchLibrary
 		/// </summary>
 		/// <param name="folder">The start search directory.</param>
 		/// <param name="isValid">The delegate that determines algorithm of directory selection.</param>
-		/// <param name="tokenSource">Instance of CancellationTokenSource for search process cancellation possibility.</param>
 		/// <param name="handlerOption">Specifies where DirectoriesFound event handlers are executed.</param>
 		/// <param name="suppressOperationCanceledException">Determines whether necessary suppress OperationCanceledException if it possible.</param>
+		/// <param name="tokenSource">Instance of CancellationTokenSource for search process cancellation possibility.</param>
 		/// <exception cref="ArgumentException"></exception>
 		/// <exception cref="ArgumentNullException"></exception>
-		public DirectorySearcher(string folder, Func<DirectoryInfo, bool> isValid, CancellationTokenSource tokenSource, ExecuteHandlers handlerOption, bool suppressOperationCanceledException)
+		public DirectorySearcher(string folder, Func<DirectoryInfo, bool> isValid, ExecuteHandlers handlerOption, bool suppressOperationCanceledException, CancellationTokenSource tokenSource)
 		{
 			CheckFolder(folder);
 			CheckDelegate(isValid);

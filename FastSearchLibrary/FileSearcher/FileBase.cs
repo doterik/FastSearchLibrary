@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace FastSearchLibrary
 {
@@ -47,7 +44,7 @@ namespace FastSearchLibrary
 
 		private protected static void CheckTokenSource(CancellationTokenSource tokenSource)
 		{
-			if (tokenSource == null) throw new ArgumentNullException(nameof(tokenSource), "Argument \"tokenSource\" is null.");
+			if (tokenSource == null) throw new ArgumentNullException(nameof(tokenSource), @"Argument ""tokenSource"" is null.");
 		}
 
 		#endregion

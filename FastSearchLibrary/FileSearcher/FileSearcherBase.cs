@@ -42,8 +42,12 @@ namespace FastSearchLibrary
 			OnSearchCompleted(false);
 		}
 
+		public abstract void StartSearch();
+
 		protected virtual void OnFilesFound(List<FileInfo> files)
 		{
+			if (files.Count == 0) return;
+
 			if (HandlerOption == ExecuteHandlers.InNewTask)
 			{
 				TaskHandlers.Add(Task.Run(() => CallFilesFound(files)));
@@ -76,6 +80,5 @@ namespace FastSearchLibrary
 
 		protected abstract void GetFiles(string folder);
 		protected abstract List<DirectoryInfo> GetStartDirectories(string folder);
-		public abstract void StartSearch();
 	}
 }

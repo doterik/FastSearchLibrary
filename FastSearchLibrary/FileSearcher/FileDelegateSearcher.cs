@@ -27,9 +27,8 @@ namespace FastSearchLibrary
 
 		protected override void GetFiles(string folder)
 		{
-			DirectoryInfo[] directories;
 			DirectoryInfo dirInfo;
-			var resultFiles = new List<FileInfo>();
+			DirectoryInfo[] directories;
 			try
 			{
 				dirInfo = new DirectoryInfo(folder);
@@ -37,10 +36,7 @@ namespace FastSearchLibrary
 
 				if (directories.Length == 0)
 				{
-					resultFiles.AddRange(dirInfo.GetFiles().Where(file => isValid(file)));
-
-					if (resultFiles.Count > 0) OnFilesFound(resultFiles);
-
+					OnFilesFound(dirInfo.GetFiles().Where(file => isValid(file)).ToList()); // 'isValid'
 					return;
 				}
 			}
@@ -55,36 +51,29 @@ namespace FastSearchLibrary
 
 			try
 			{
-				var files = dirInfo.GetFiles();
-				resultFiles.AddRange(files.Where(file => isValid(file)));
-
-				if (resultFiles.Count > 0) OnFilesFound(resultFiles);
+				OnFilesFound(dirInfo.GetFiles().Where(file => isValid(file)).ToList()); // 'isValid'
 			}
 			catch (UnauthorizedAccessException) { }
 			catch (PathTooLongException) { }
 			catch (DirectoryNotFoundException) { }
 		}
 
-
 		protected override List<DirectoryInfo> GetStartDirectories(string folder)
 		{
 			DirectoryInfo[] directories;
-			var resultFiles = new List<FileInfo>();
 			try
 			{
 				var dirInfo = new DirectoryInfo(folder);
 				directories = dirInfo.GetDirectories();
 
-				resultFiles.AddRange(dirInfo.GetFiles().Where(file => isValid(file)));
-
-				if (resultFiles.Count > 0) OnFilesFound(resultFiles);
+				OnFilesFound(dirInfo.GetFiles().Where(file => isValid(file)).ToList()); // 'isValid'
 
 				if (directories.Length > 1) return new List<DirectoryInfo>(directories);
-				if (directories.Length == 0) return new List<DirectoryInfo>();
+				if (directories.Length == 0) return new();
 			}
-			catch (UnauthorizedAccessException) { return new List<DirectoryInfo>(); }
-			catch (PathTooLongException) { return new List<DirectoryInfo>(); }
-			catch (DirectoryNotFoundException) { return new List<DirectoryInfo>(); }
+			catch (UnauthorizedAccessException) { return new(); }
+			catch (PathTooLongException) { return new(); }
+			catch (DirectoryNotFoundException) { return new(); }
 
 			return GetStartDirectories(directories[0].FullName);
 		}

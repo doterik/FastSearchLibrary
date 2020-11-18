@@ -9,7 +9,6 @@ namespace FastSearchLibrary
 {
 	internal class FilePatternSearcher : FileSearcherBase
 	{
-
 		private readonly string pattern;
 
 		public FilePatternSearcher(string folder, string pattern, ExecuteHandlers handlerOption) : base(folder, handlerOption)
@@ -37,8 +36,7 @@ namespace FastSearchLibrary
 
 				if (directories.Length == 0)
 				{
-					var resFiles = dirInfo.GetFiles(pattern);
-					if (resFiles.Length > 0) OnFilesFound(resFiles.ToList());
+					OnFilesFound(dirInfo.GetFiles(pattern).ToList()); // 'pattern'
 					return;
 				}
 			}
@@ -53,8 +51,7 @@ namespace FastSearchLibrary
 
 			try
 			{
-				var resFiles = dirInfo.GetFiles(pattern);
-				if (resFiles.Length > 0) OnFilesFound(resFiles.ToList());
+				OnFilesFound(dirInfo.GetFiles(pattern).ToList()); // 'pattern'
 			}
 			catch (UnauthorizedAccessException) { }
 			catch (PathTooLongException) { }
@@ -69,15 +66,14 @@ namespace FastSearchLibrary
 				var dirInfo = new DirectoryInfo(folder);
 				directories = dirInfo.GetDirectories();
 
-				var resFiles = dirInfo.GetFiles(pattern);
-				if (resFiles.Length > 0) OnFilesFound(resFiles.ToList());
+				OnFilesFound(dirInfo.GetFiles(pattern).ToList()); // 'pattern'
 
 				if (directories.Length > 1) return new List<DirectoryInfo>(directories);
-				if (directories.Length == 0) return new List<DirectoryInfo>();
+				if (directories.Length == 0) return new();
 			}
-			catch (UnauthorizedAccessException) { return new List<DirectoryInfo>(); }
-			catch (PathTooLongException) { return new List<DirectoryInfo>(); }
-			catch (DirectoryNotFoundException) { return new List<DirectoryInfo>(); }
+			catch (UnauthorizedAccessException) { return new(); }
+			catch (PathTooLongException) { return new(); }
+			catch (DirectoryNotFoundException) { return new(); }
 
 			return GetStartDirectories(directories[0].FullName);
 		}
