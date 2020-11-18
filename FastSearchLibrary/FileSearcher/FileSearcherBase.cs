@@ -18,6 +18,10 @@ namespace FastSearchLibrary
 		protected string Folder { get; }
 		protected ConcurrentBag<Task> TaskHandlers { get; }
 
+		private protected string Pattern { get; set; } = string.Empty; // FilePatternSearcher,  FileCancellationPatternSearcher
+		private protected Func<FileInfo, bool>? IsValid { get; set; }  // FileDelegateSearcher, FileCancellationDelegateSearcher
+//      protected CancellationToken Token { get; } // FileCancellationSearcherBase
+
 		public FileSearcherBase(string folder, ExecuteHandlers handlerOption)
 		{
 			Folder = folder;
@@ -42,7 +46,10 @@ namespace FastSearchLibrary
 			OnSearchCompleted(false);
 		}
 
-		public abstract void StartSearch();
+		/// <summary>
+		/// Starts a file search operation with realtime reporting using several threads in thread pool.
+		/// </summary>
+		public virtual void StartSearch() => GetFilesFast();
 
 		protected virtual void OnFilesFound(List<FileInfo> files)
 		{
@@ -78,7 +85,88 @@ namespace FastSearchLibrary
 			SearchCompleted?.Invoke(this, new SearchCompletedEventArgs(isCanceled));
 		}
 
-		protected abstract void GetFiles(string folder);
-		protected abstract List<DirectoryInfo> GetStartDirectories(string folder);
+//sync
+		protected virtual void GetFiles(string folder)
+		{
+//          Token.ThrowIfCancellationRequested();
+
+			DirectoryInfo dirInfo;
+			DirectoryInfo[] directories;
+			try
+			{
+				dirInfo = new DirectoryInfo(folder);
+				directories = dirInfo.GetDirectories();
+
+				if (directories.Length == 0)
+				{
+					if (Pattern != string.Empty)
+					{
+						OnFilesFound(dirInfo.GetFiles(Pattern).ToList()); // 'pattern'
+					}
+					else if (IsValid != null)
+					{
+						OnFilesFound(dirInfo.GetFiles().Where(file => IsValid(file)).ToList()); // 'isValid'
+					}
+
+					return;
+				}
+			}
+			catch (UnauthorizedAccessException) { return; }
+			catch (PathTooLongException) { return; }
+			catch (DirectoryNotFoundException) { return; }
+
+			foreach (var d in directories)
+			{
+//				Token.ThrowIfCancellationRequested();
+
+				GetFiles(d.FullName);
+			}
+
+//			Token.ThrowIfCancellationRequested();
+
+			try
+			{
+				if (Pattern != string.Empty)
+				{
+					OnFilesFound(dirInfo.GetFiles(Pattern).ToList()); // 'pattern'
+				}
+				else if (IsValid != null)
+				{
+					OnFilesFound(dirInfo.GetFiles().Where(file => IsValid(file)).ToList()); // 'isValid'
+				}
+			}
+			catch (UnauthorizedAccessException) { }
+			catch (PathTooLongException) { }
+			catch (DirectoryNotFoundException) { }
+		}
+
+		protected virtual List<DirectoryInfo> GetStartDirectories(string folder)
+		{
+//			Token.ThrowIfCancellationRequested();
+
+			DirectoryInfo[] directories;
+			try
+			{
+				var dirInfo = new DirectoryInfo(folder);
+				directories = dirInfo.GetDirectories();
+
+				if (Pattern != string.Empty)
+				{
+					OnFilesFound(dirInfo.GetFiles(Pattern).ToList()); // 'pattern'
+				}
+				else if (IsValid != null)
+				{
+					OnFilesFound(dirInfo.GetFiles().Where(file => IsValid(file)).ToList()); // 'isValid'
+				}
+
+				if (directories.Length > 1) return new List<DirectoryInfo>(directories);
+				if (directories.Length == 0) return new();
+			}
+			catch (UnauthorizedAccessException) { return new(); }
+			catch (PathTooLongException) { return new(); }
+			catch (DirectoryNotFoundException) { return new(); }
+
+			return GetStartDirectories(directories[0].FullName); // directories.Length == 1
+		}
 	}
 }
