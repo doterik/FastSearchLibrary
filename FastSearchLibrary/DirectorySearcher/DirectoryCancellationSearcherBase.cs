@@ -21,6 +21,9 @@ namespace FastSearchLibrary
 		protected CancellationToken Token { get; }
 		private ConcurrentBag<Task> TaskHandlers { get; }
 
+		private protected string Pattern { get; set; } = string.Empty;     // DirectoryCancellationPatternSearcher
+		private protected Func<DirectoryInfo, bool>? IsValid { get; set; } // DirectoryCancellationDelegateSearcher
+
 		public DirectoryCancellationSearcherBase(string folder, ExecuteHandlers handlerOption, bool suppressOperationCanceledException, CancellationToken token)
 		{
 			Folder = folder;
@@ -101,7 +104,90 @@ namespace FastSearchLibrary
 			});
 		}
 
-		protected abstract void GetDirectories(string folder);
-		protected abstract List<DirectoryInfo> GetStartDirectories(string folder);
+		protected virtual void GetDirectories(string folder)
+		{
+			Token.ThrowIfCancellationRequested();
+
+			DirectoryInfo dirInfo;
+			DirectoryInfo[] directories;
+			try
+			{
+				dirInfo = new DirectoryInfo(folder);
+				directories = dirInfo.GetDirectories();
+
+				if (directories.Length == 0) return;
+			}
+			catch (UnauthorizedAccessException) { return; }
+			catch (PathTooLongException) { return; }
+			catch (DirectoryNotFoundException) { return; }
+
+			foreach (var d in directories)
+			{
+				Token.ThrowIfCancellationRequested();
+
+				GetDirectories(d.FullName);
+			}
+
+			Token.ThrowIfCancellationRequested();
+
+			try
+			{
+				if (Pattern != string.Empty)
+				{
+					OnDirectoriesFound(dirInfo.GetDirectories(Pattern).ToList()); // 'pattern'
+				}
+				if (IsValid != null)
+				{
+					OnDirectoriesFound(directories.Where(dir => IsValid(dir)).ToList()); // 'isValid'
+				}
+			}
+			catch (UnauthorizedAccessException) { }
+			catch (PathTooLongException) { }
+			catch (DirectoryNotFoundException) { }
+		}
+
+		protected virtual List<DirectoryInfo> GetStartDirectories(string folder)
+		{
+			Token.ThrowIfCancellationRequested();
+
+			DirectoryInfo dirInfo;
+			DirectoryInfo[] directories;
+			try
+			{
+				dirInfo = new DirectoryInfo(folder);
+				directories = dirInfo.GetDirectories();
+
+				if (directories.Length > 1)
+				{
+					if (Pattern != string.Empty)
+					{
+						OnDirectoriesFound(dirInfo.GetDirectories(Pattern).ToList()); // 'pattern'
+					}
+					if (IsValid != null)
+					{
+						OnDirectoriesFound(directories.Where(dir => IsValid(dir)).ToList()); // 'isValid'
+					}
+
+					return new List<DirectoryInfo>(directories);
+				}
+
+				if (directories.Length == 0) return new();
+			}
+			catch (UnauthorizedAccessException) { return new(); }
+			catch (PathTooLongException) { return new(); }
+			catch (DirectoryNotFoundException) { return new(); }
+
+			// if directories.Length == 1
+			if (Pattern != string.Empty)
+			{
+				OnDirectoriesFound(dirInfo.GetDirectories(Pattern).ToList()); // 'pattern'
+			}
+			if (IsValid != null)
+			{
+				OnDirectoriesFound(directories.Where(dir => IsValid(dir)).ToList()); // 'isValid'
+			}
+
+			return GetStartDirectories(directories[0].FullName);
+		}
 	}
 }
