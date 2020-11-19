@@ -11,9 +11,9 @@ namespace FastSearchLibrary
 	{
 		//private readonly string pattern;
 
-		public FilePatternSearcher(string folder) : this(folder, "*") { }
-		public FilePatternSearcher(string folder, string pattern) : this(folder, pattern, ExecuteHandlers.InCurrentTask) { }
-		public FilePatternSearcher(string folder, string pattern, ExecuteHandlers handlerOption) : base(folder, handlerOption)
+		//public FilePatternSearcher(string folder) : this(folder, "*") { }
+		//public FilePatternSearcher(string folder, string pattern) : this(folder, pattern, ExecuteHandlers.InCurrentTask) { }
+		internal FilePatternSearcher(string folder, string pattern, ExecuteHandlers handlerOption) : base(folder, handlerOption)
 		{
 			Pattern = pattern;
 		}

@@ -1,0 +1,43 @@
+﻿
+x	FileEventArgs : EventArgs					FileEventArgs(List<FileInfo> files)
+
+
+x	FileSearcherBase
+
+x1	FilePatternSearcher          : FileSearcherBase
+
+x1	FileDelegateSearcher         : FileSearcherBase
+
+x	FileCancellationSearcherBase : FileSearcherBase
+
+x2	FileCancellationSearcher     : FileCancellationSearcherBase (pattern, delegate)
+
+x	FileBase
+
+x	FileSearcher		 : FileBase				FileSearcherBase searcher;
+														FilePatternSearcher(folder, pattern, handlerOption);
+														FileDelegateSearcher(folder, isValid, handlerOption);
+														FileCancellationPatternSearcher(folder, pattern, handlerOption, allowOperationCanceledException, tokenSource.Token);
+														FileCancellationDelegateSearcher(folder, isValid, handlerOption, allowOperationCanceledException, tokenSource.Token);
+
+x	FileSearcherMultiple : FileBase				List<FileSearcherBase> searchers;
+														FileCancellationPatternSearcher(folder, pattern, handlerOption, false, tokenSource.Token));
+														FileCancellationDelegateSearcher(folder, isValid, handlerOption, false, tokenSource.Token));
+
+
+
+x	DirectoryEventArgs : EventArgs				DirectoryEventArgs(List<DirectoryInfo> directories)
+
+	
+x	DirectoryCancellationSearcherBase
+
+x2	DirectoryCancellationSearcher  : DirectoryCancellationSearcherBase	(pattern, delegate)
+
+
+x	DirectorySearcher							DirectoryCancellationSearcherBase searcher;
+														DirectoryCancellationPatternSearcher(folder, pattern, handlerOption, allowOperationCanceledException, tokenSource.Token);
+														DirectoryCancellationDelegateSearcher(folder, isValid, handlerOption, allowOperationCanceledException, tokenSource.Token);
+
+x	DirectorySearcherMultiple					List<DirectoryCancellationSearcherBase> searchers;
+														DirectoryCancellationPatternSearcher(folder, pattern, handlerOption, false, tokenSource.Token));
+														DirectoryCancellationDelegateSearcher(folder, isValid, handlerOption, false, tokenSource.Token));

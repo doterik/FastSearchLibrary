@@ -106,7 +106,6 @@ namespace FastSearchLibrary
 			{
 				searchers.Add(new DirectoryCancellationSearcher(folder, isValid, tokenSource.Token, handlerOption, false));
 			}
-
 		}
 
 		#endregion

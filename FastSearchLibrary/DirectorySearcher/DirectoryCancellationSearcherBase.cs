@@ -1,4 +1,5 @@
-﻿#pragma warning disable IDE0022 // Use expression body for methods
+﻿#pragma warning disable CA1068 // CancellationToken parameters must come last
+#pragma warning disable IDE0022 // Use expression body for methods
 
 using System;
 using System.Collections.Concurrent;
@@ -136,7 +137,7 @@ namespace FastSearchLibrary
 				{
 					OnDirectoriesFound(dirInfo.GetDirectories(Pattern).ToList()); // 'pattern'
 				}
-				if (IsValid != null)
+				else if (IsValid != null)
 				{
 					OnDirectoriesFound(directories.Where(dir => IsValid(dir)).ToList()); // 'isValid'
 				}
@@ -163,7 +164,7 @@ namespace FastSearchLibrary
 					{
 						OnDirectoriesFound(dirInfo.GetDirectories(Pattern).ToList()); // 'pattern'
 					}
-					if (IsValid != null)
+					else if (IsValid != null)
 					{
 						OnDirectoriesFound(directories.Where(dir => IsValid(dir)).ToList()); // 'isValid'
 					}
@@ -182,7 +183,7 @@ namespace FastSearchLibrary
 			{
 				OnDirectoriesFound(dirInfo.GetDirectories(Pattern).ToList()); // 'pattern'
 			}
-			if (IsValid != null)
+			else if (IsValid != null)
 			{
 				OnDirectoriesFound(directories.Where(dir => IsValid(dir)).ToList()); // 'isValid'
 			}

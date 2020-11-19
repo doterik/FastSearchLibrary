@@ -103,10 +103,10 @@ namespace FastSearchLibrary
 
 		#endregion
 
-		#region FileCancellationDelegateSearcher constructors
+		#region FileCancellationDelegateSearcher constructor
 
-		public FileSearcher(string folder, Func<FileInfo, bool> isValid, ExecuteHandlers handlerOption, CancellationTokenSource tokenSource)
-			: this(folder, isValid, tokenSource, handlerOption, true) { }
+		//public FileSearcher(string folder, Func<FileInfo, bool> isValid, ExecuteHandlers handlerOption, CancellationTokenSource tokenSource)
+		//	: this(folder, isValid, tokenSource, handlerOption, true) { }
 
 		/// <summary>Initializes a new instance of the <see cref="FileSearcher"/> class.</summary>
 		/// <param name="folder">The start search directory.</param>
@@ -261,8 +261,7 @@ namespace FastSearchLibrary
 		/// <param name="pattern">The search pattern.</param>
 		/// <exception cref="DirectoryNotFoundException"></exception>
 		/// <exception cref="ArgumentNullException"></exception>
-		public static async Task<List<FileInfo>> GetFilesAsync(string folder, string pattern = "*") =>
-			await Task.Run(() => GetFiles(folder, pattern));
+		public static async Task<List<FileInfo>> GetFilesAsync(string folder, string pattern = "*") => await Task.Run(() => GetFiles(folder, pattern));
 
 		/// <summary>
 		/// Returns a list of files that are contained in directory and all subdirectories as an asynchronous operation.
@@ -271,8 +270,7 @@ namespace FastSearchLibrary
 		/// <param name="isValid">The delegate that determines algorithm of file selection.</param>
 		/// <exception cref="DirectoryNotFoundException"></exception>
 		/// <exception cref="ArgumentNullException"></exception>
-		public static async Task<List<FileInfo>> GetFilesAsync(string folder, Func<FileInfo, bool> isValid) =>
-			await Task.Run(() => GetFiles(folder, isValid));
+		public static async Task<List<FileInfo>> GetFilesAsync(string folder, Func<FileInfo, bool> isValid) => await Task.Run(() => GetFiles(folder, isValid));
 
 		/// <summary>
 		/// Returns a list of files that are contained in directory and all subdirectories using several threads of thread pool.
@@ -327,8 +325,7 @@ namespace FastSearchLibrary
 		/// <param name="pattern">The search pattern.</param>
 		/// <exception cref="DirectoryNotFoundException"></exception>
 		/// <exception cref="ArgumentNullException"></exception>
-		public static Task<List<FileInfo>> GetFilesFastAsync(string folder, string pattern = "*") =>
-			 Task.Run(() => GetFilesFast(folder, pattern));
+		public static Task<List<FileInfo>> GetFilesFastAsync(string folder, string pattern = "*") => Task.Run(() => GetFilesFast(folder, pattern));
 
 		/// <summary>
 		/// Returns a list of files that are contained in directory and all subdirectories using several threads of thread pool as an asynchronous operation.
@@ -337,8 +334,7 @@ namespace FastSearchLibrary
 		/// <param name="isValid">The delegate that determines algorithm of file selection.</param>
 		/// <exception cref="DirectoryNotFoundException"></exception>
 		/// <exception cref="ArgumentNullException"></exception>
-		public static Task<List<FileInfo>> GetFilesFastAsync(string folder, Func<FileInfo, bool> isValid) =>
-			 Task.Run(() => GetFilesFast(folder, isValid));
+		public static Task<List<FileInfo>> GetFilesFastAsync(string folder, Func<FileInfo, bool> isValid) => Task.Run(() => GetFilesFast(folder, isValid));
 
 		#endregion
 
@@ -358,7 +354,6 @@ namespace FastSearchLibrary
 
 				if (directories.Length > 1) return new List<DirectoryInfo>(directories);
 				if (directories.Length == 0) return new List<DirectoryInfo>();
-
 			}
 			catch (UnauthorizedAccessException) { return new List<DirectoryInfo>(); }
 			catch (PathTooLongException) { return new List<DirectoryInfo>(); }

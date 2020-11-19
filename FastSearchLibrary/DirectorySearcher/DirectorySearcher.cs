@@ -145,8 +145,7 @@ namespace FastSearchLibrary
 		/// <exception cref="ArgumentException"></exception>
 		/// <exception cref="DirectoryNotFoundException"></exception>
 		/// <exception cref="NotSupportedException"></exception>
-		public static Task<List<DirectoryInfo>> GetDirectoriesAsync(string folder, string pattern = "*")
-			=> Task.Run(() => GetDirectories(folder, pattern));
+		public static Task<List<DirectoryInfo>> GetDirectoriesAsync(string folder, string pattern = "*") => Task.Run(() => GetDirectories(folder, pattern));
 
 		/// <summary>Returns a list of directories that are contained in directory and all subdirectories as an asynchronous operation.</summary>
 		/// <param name="folder">The start search directory.</param>
@@ -155,8 +154,7 @@ namespace FastSearchLibrary
 		/// <exception cref="NullReferenceException"></exception>
 		/// <exception cref="DirectoryNotFoundException"></exception>
 		/// <exception cref="NotSupportedException"></exception>
-		public static Task<List<DirectoryInfo>> GetDirectoriesAsync(string folder, Func<DirectoryInfo, bool> isValid)
-			=> Task.Run(() => GetDirectories(folder, isValid));
+		public static Task<List<DirectoryInfo>> GetDirectoriesAsync(string folder, Func<DirectoryInfo, bool> isValid) => Task.Run(() => GetDirectories(folder, isValid));
 
 		/// <summary>Returns a list of directories that are contained in directory and all subdirectories using several threads in thread pool.</summary>
 		/// <param name="folder">The start search directory.</param>
@@ -211,8 +209,7 @@ namespace FastSearchLibrary
 		/// <exception cref="ArgumentNullException"></exception>
 		/// <exception cref="ArgumentException"></exception>
 		/// <exception cref="NotSupportedException"></exception>
-		public static Task<List<DirectoryInfo>> GetDirectoriesFastAsync(string folder, string pattern = "*")
-			=> Task.Run(() => GetDirectoriesFast(folder, pattern));
+		public static Task<List<DirectoryInfo>> GetDirectoriesFastAsync(string folder, string pattern = "*") => Task.Run(() => GetDirectoriesFast(folder, pattern));
 
 		/// <summary>Returns a list of directories that are contained in directory and all subdirectories using several threads in thread pool as an asynchronous operation.</summary>
 		/// <param name="folder">The start search directory.</param>
@@ -221,8 +218,7 @@ namespace FastSearchLibrary
 		/// <exception cref="NullReferenceException"></exception>
 		/// <exception cref="DirectoryNotFoundException"></exception>
 		/// <exception cref="NotSupportedException"></exception>
-		public static Task<List<DirectoryInfo>> GetDirectoriesFastAsync(string folder, Func<DirectoryInfo, bool> isValid)
-			=> Task.Run(() => GetDirectoriesFast(folder, isValid));
+		public static Task<List<DirectoryInfo>> GetDirectoriesFastAsync(string folder, Func<DirectoryInfo, bool> isValid) => Task.Run(() => GetDirectoriesFast(folder, isValid));
 
 		#endregion
 

@@ -11,9 +11,9 @@ namespace FastSearchLibrary
 	{
 		//private readonly Func<FileInfo, bool> isValid;
 
-		public FileDelegateSearcher(string folder) : this(folder, (arg) => true) { }
-		public FileDelegateSearcher(string folder, Func<FileInfo, bool> isValid) : this(folder, isValid, ExecuteHandlers.InCurrentTask) { }
-		public FileDelegateSearcher(string folder, Func<FileInfo, bool> isValid, ExecuteHandlers handlerOption) : base(folder, handlerOption)
+		//public FileDelegateSearcher(string folder) : this(folder, (arg) => true) { }
+		//public FileDelegateSearcher(string folder, Func<FileInfo, bool> isValid) : this(folder, isValid, ExecuteHandlers.InCurrentTask) { }
+		internal FileDelegateSearcher(string folder, Func<FileInfo, bool> isValid, ExecuteHandlers handlerOption) : base(folder, handlerOption)
 		{
 			IsValid = isValid;
 		}

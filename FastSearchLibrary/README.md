@@ -147,7 +147,7 @@ Next classes provide search functionality:
  `lock` keyword as you can see in example above or use thread safe collection from `System.Collections.Concurrent` namespace.
  
  ### Extended opportunities
-   There are 2 additional parameters that one can set. These are `handlerOption` and `suppressOperationCanceledException`.
+   There are 2 additional parameters that one can set. These are `handlerOption` and `allowOperationCanceledException`.
    `ExecuteHandlers handlerOption` parameter represents instance of `ExecuteHandlers` enumeration that specifies where
    FilesFound event handlers are executed:  
    * `InCurrentTask` value means that `FileFound` event handlers will be executed in that task where files were found. 
@@ -155,13 +155,13 @@ Next classes provide search functionality:
     Default value is `InCurrentTask`. It is more preferably in most cases. `InNewTask` value one should use only if handlers execute
     very sophisticated work that takes a lot of time, e.g. parsing of each found file.
     
-   `bool suppressOperationCanceledException` parameter determines whether necessary to suppress 
+   `bool allowOperationCanceledException` parameter determines whether to allow 
    OperationCanceledException.
-   If `suppressOperationCanceledException` parameter has value `false` and StopSearch() method is called the `OperationCanceledException` 
+   If `allowOperationCanceledException` parameter has value `true` and StopSearch() method is called the `OperationCanceledException` 
    will be thrown. In this case you have to process the exception manually.
-   If `suppressOperationCanceledException` parameter has value `true` and StopSearch() method is called the `OperationCanceledException` 
+   If `allowOperationCanceledException` parameter has value `false` and StopSearch() method is called the `OperationCanceledException` 
    is processed automatically and you don't need to catch it. 
-   Default value is `true`.
+   Default value is `false`.
    
    Example:
             
@@ -170,7 +170,7 @@ Next classes provide search functionality:
     FileSearcher searcher = new FileSearcher(@"D:\Program Files", (f) =>
     {
        return Regex.IsMatch(f.Name, @".{1,5}[Ss]ome[Pp]attern.txt$") && (f.Length >= 8192); // 8192b == 8Kb 
-    }, tokenSource, ExecuteHandlers.InNewTask, true); // suppressOperationCanceledException == true
+    }, tokenSource, ExecuteHandlers.InNewTask, false); // allowOperationCanceledException == false
     
    ### MULTIPLE SEARCH
    `FileSearcher` and `DirectorySearcher` classes can search only in one directory (and in all subdirectories surely) 

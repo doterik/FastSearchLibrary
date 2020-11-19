@@ -1,4 +1,5 @@
 ﻿#pragma warning disable CA1068 // CancellationToken parameters must come last
+//#pragma warning disable IDE0021 // Use expression body for constructors
 #pragma warning disable IDE0022 // Use expression body for methods
 
 using System;
@@ -15,12 +16,24 @@ namespace FastSearchLibrary
 		//protected CancellationToken Token { get; }
 		protected bool AllowOperationCanceledException { get; }
 
-		public FileCancellationSearcherBase(string folder, CancellationToken token, ExecuteHandlers handlerOption, bool allowOperationCanceledException)
+		protected FileCancellationSearcherBase(string folder, CancellationToken token, ExecuteHandlers handlerOption, bool allowOperationCanceledException)
 			: base(folder, handlerOption)
 		{
 			Token = token;
 			AllowOperationCanceledException = allowOperationCanceledException;
 		}
+
+		//internal FileCancellationSearcherBase(string folder, string pattern, CancellationToken token, ExecuteHandlers handlerOption, bool allowOperationCanceledException) 
+		//	: this(folder, token, handlerOption, allowOperationCanceledException)
+		//{
+		//	Pattern = pattern;
+		//}
+
+		//internal FileCancellationSearcherBase(string folder, Func<FileInfo, bool> isValid, CancellationToken token, ExecuteHandlers handlerOption, bool allowOperationCanceledException)
+		//	: this(folder, token, handlerOption, allowOperationCanceledException)
+		//{
+		//	IsValid = isValid;
+		//}
 
 		protected override void GetFilesFast() /* .WithCancellation(Token) */
 		{
