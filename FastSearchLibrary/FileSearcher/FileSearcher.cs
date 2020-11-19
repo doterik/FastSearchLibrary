@@ -140,16 +140,16 @@ namespace FastSearchLibrary
 		/// <param name="folder">The start search directory.</param>
 		/// <param name="pattern">The search pattern.</param>
 		/// <param name="handlerOption">Specifies where FilesFound event handlers are executed.</param>
-		/// <param name="suppressOperationCanceledException">Determines whether necessary suppress OperationCanceledException if it possible.</param>
+		/// <param name="allowOperationCanceledException">Determines whether necessary suppress OperationCanceledException if it possible.</param>
 		/// <param name="tokenSource">Instance of CancellationTokenSource for search process cancellation possibility.</param>
 		/// <exception cref="ArgumentException"></exception>
 		/// <exception cref="ArgumentNullException"></exception>
-		public FileSearcher(string folder, string pattern, ExecuteHandlers handlerOption, bool suppressOperationCanceledException, CancellationTokenSource tokenSource)
+		public FileSearcher(string folder, string pattern, ExecuteHandlers handlerOption, bool allowOperationCanceledException, CancellationTokenSource tokenSource)
 		{
 			CheckFolder(folder);
 			CheckPattern(pattern);
 			CheckTokenSource(tokenSource);
-			searcher = new FileCancellationPatternSearcher(folder, pattern, handlerOption, suppressOperationCanceledException, tokenSource.Token);
+			searcher = new FileCancellationPatternSearcher(folder, pattern, handlerOption, allowOperationCanceledException, tokenSource.Token);
 			this.tokenSource = tokenSource;
 		}
 
@@ -186,16 +186,16 @@ namespace FastSearchLibrary
 		/// <param name="folder">The start search directory.</param>
 		/// <param name="isValid">The delegate that determines algorithm of file selection.</param>
 		/// <param name="handlerOption">Specifies where FilesFound event handlers are executed.</param>
-		/// <param name="suppressOperationCanceledException">Determines whether necessary suppress OperationCanceledException if it possible.</param>
+		/// <param name="allowOperationCanceledException">Determines whether necessary suppress OperationCanceledException if it possible.</param>
 		/// <param name="tokenSource">Instance of CancellationTokenSource for search process cancellation possibility.</param>
 		/// <exception cref="ArgumentException"></exception>
 		/// <exception cref="ArgumentNullException"></exception>
-		public FileSearcher(string folder, Func<FileInfo, bool> isValid, ExecuteHandlers handlerOption, bool suppressOperationCanceledException, CancellationTokenSource tokenSource)
+		public FileSearcher(string folder, Func<FileInfo, bool> isValid, ExecuteHandlers handlerOption, bool allowOperationCanceledException, CancellationTokenSource tokenSource)
 		{
 			CheckFolder(folder);
 			CheckDelegate(isValid);
 			CheckTokenSource(tokenSource);
-			searcher = new FileCancellationDelegateSearcher(folder, isValid, handlerOption, suppressOperationCanceledException, tokenSource.Token);
+			searcher = new FileCancellationDelegateSearcher(folder, isValid, handlerOption, allowOperationCanceledException, tokenSource.Token);
 			this.tokenSource = tokenSource;
 		}
 

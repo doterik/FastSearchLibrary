@@ -1,6 +1,4 @@
-﻿#pragma warning disable IDE0021 // Use expression body for constructors
-#pragma warning disable IDE0022 // Use expression body for methods
-#pragma warning disable IDE0052 // Remove unread private members
+﻿#pragma warning disable IDE0022 // Use expression body for methods
 
 using System;
 using System.Collections.Concurrent;
@@ -9,7 +7,6 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-
 
 namespace FastSearchLibrary
 {
@@ -23,7 +20,6 @@ namespace FastSearchLibrary
 		private readonly DirectoryCancellationSearcherBase searcher;
 
 		private readonly CancellationTokenSource tokenSource;
-		private readonly ExecuteHandlers handlerOption;
 
 		/// <summary>
 		/// Event fires when next portion of directories is found. Event handlers are not thread safe. 
@@ -53,7 +49,7 @@ namespace FastSearchLibrary
 		/// <exception cref="ArgumentException"></exception>
 		/// <exception cref="ArgumentNullException"></exception>
 		public DirectorySearcher(string folder, CancellationTokenSource tokenSource)
-			: this(folder, "*", ExecuteHandlers.InCurrentTask, true, tokenSource) { }
+			: this(folder, "*", ExecuteHandlers.InCurrentTask, false, tokenSource) { }
 
 		/// <summary>
 		/// Initialize a new instance of DirectorySearch class. 
@@ -64,7 +60,7 @@ namespace FastSearchLibrary
 		/// <exception cref="ArgumentException"></exception>
 		/// <exception cref="ArgumentNullException"></exception>
 		public DirectorySearcher(string folder, string pattern, CancellationTokenSource tokenSource)
-			: this(folder, pattern, ExecuteHandlers.InCurrentTask, true, tokenSource) { }
+			: this(folder, pattern, ExecuteHandlers.InCurrentTask, false, tokenSource) { }
 
 		/// <summary>
 		/// Initialize a new instance of DirectorySearch class. 
@@ -76,7 +72,7 @@ namespace FastSearchLibrary
 		/// <exception cref="ArgumentException"></exception>
 		/// <exception cref="ArgumentNullException"></exception>
 		public DirectorySearcher(string folder, string pattern, ExecuteHandlers handlerOption, CancellationTokenSource tokenSource)
-			: this(folder, pattern, handlerOption, true, tokenSource) { }
+			: this(folder, pattern, handlerOption, false, tokenSource) { }
 
 		/// <summary>
 		/// Initialize a new instance of DirectorySearch class. 
@@ -84,17 +80,17 @@ namespace FastSearchLibrary
 		/// <param name="folder">The start search directory.</param>
 		/// <param name="pattern">The search pattern.</param>
 		/// <param name="handlerOption">Specifies where DirectoriesFound event handlers are executed.</param>
-		/// <param name="suppressOperationCanceledException">Determines whether necessary suppress OperationCanceledException if it possible.</param>
+		/// <param name="allowOperationCanceledException">Determines whether necessary suppress OperationCanceledException if it possible.</param>
 		/// <param name="tokenSource">Instance of CancellationTokenSource for search process cancellation possibility.</param>
 		/// <exception cref="ArgumentException"></exception>
 		/// <exception cref="ArgumentNullException"></exception>
-		public DirectorySearcher(string folder, string pattern, ExecuteHandlers handlerOption, bool suppressOperationCanceledException, CancellationTokenSource tokenSource)
+		public DirectorySearcher(string folder, string pattern, ExecuteHandlers handlerOption, bool allowOperationCanceledException, CancellationTokenSource tokenSource)
 		{
 			CheckFolder(folder);
 			CheckPattern(pattern);
 			CheckTokenSource(tokenSource);
 
-			searcher = new DirectoryCancellationPatternSearcher(folder, pattern, handlerOption, suppressOperationCanceledException, tokenSource.Token);
+			searcher = new DirectoryCancellationPatternSearcher(folder, pattern, handlerOption, allowOperationCanceledException, tokenSource.Token);
 			this.tokenSource = tokenSource;
 		}
 
@@ -123,10 +119,7 @@ namespace FastSearchLibrary
 		/// <exception cref="ArgumentException"></exception>
 		/// <exception cref="ArgumentNullException"></exception>
 		public DirectorySearcher(string folder, Func<DirectoryInfo, bool> isValid, ExecuteHandlers handlerOption, CancellationTokenSource tokenSource)
-			: this(folder, isValid, ExecuteHandlers.InCurrentTask, true, tokenSource)
-		{
-			this.handlerOption = handlerOption;
-		}
+			: this(folder, isValid, ExecuteHandlers.InCurrentTask, true, tokenSource)		{		}
 
 		/// <summary>
 		/// Initialize a new instance of DirectorySearch class.
@@ -134,17 +127,17 @@ namespace FastSearchLibrary
 		/// <param name="folder">The start search directory.</param>
 		/// <param name="isValid">The delegate that determines algorithm of directory selection.</param>
 		/// <param name="handlerOption">Specifies where DirectoriesFound event handlers are executed.</param>
-		/// <param name="suppressOperationCanceledException">Determines whether necessary suppress OperationCanceledException if it possible.</param>
+		/// <param name="allowOperationCanceledException">Determines whether necessary suppress OperationCanceledException if it possible.</param>
 		/// <param name="tokenSource">Instance of CancellationTokenSource for search process cancellation possibility.</param>
 		/// <exception cref="ArgumentException"></exception>
 		/// <exception cref="ArgumentNullException"></exception>
-		public DirectorySearcher(string folder, Func<DirectoryInfo, bool> isValid, ExecuteHandlers handlerOption, bool suppressOperationCanceledException, CancellationTokenSource tokenSource)
+		public DirectorySearcher(string folder, Func<DirectoryInfo, bool> isValid, ExecuteHandlers handlerOption, bool allowOperationCanceledException, CancellationTokenSource tokenSource)
 		{
 			CheckFolder(folder);
 			CheckDelegate(isValid);
 			CheckTokenSource(tokenSource);
 
-			searcher = new DirectoryCancellationDelegateSearcher(folder, isValid, handlerOption, suppressOperationCanceledException, tokenSource.Token);
+			searcher = new DirectoryCancellationDelegateSearcher(folder, isValid, handlerOption, allowOperationCanceledException, tokenSource.Token);
 			this.tokenSource = tokenSource;
 		}
 

@@ -12,8 +12,8 @@ namespace FastSearchLibrary
 	{
 		//private readonly Func<DirectoryInfo, bool> isValid;
 
-		public DirectoryCancellationDelegateSearcher(string folder, Func<DirectoryInfo, bool> isValid, ExecuteHandlers handlerOption, bool suppressOperationCanceledException, CancellationToken token)
-			: base(folder, handlerOption, suppressOperationCanceledException, token)
+		public DirectoryCancellationDelegateSearcher(string folder, Func<DirectoryInfo, bool> isValid, ExecuteHandlers handlerOption, bool allowOperationCanceledException, CancellationToken token)
+			: base(folder, handlerOption, allowOperationCanceledException, token)
 		{
 			IsValid = isValid;
 		}

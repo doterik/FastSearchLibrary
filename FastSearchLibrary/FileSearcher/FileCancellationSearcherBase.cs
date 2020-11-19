@@ -12,13 +12,13 @@ namespace FastSearchLibrary
 	internal abstract class FileCancellationSearcherBase : FileSearcherBase
 	{
 		//protected CancellationToken Token { get; }
-		protected bool SuppressOperationCanceledException { get; }
+		protected bool AllowOperationCanceledException { get; }
 
-		public FileCancellationSearcherBase(string folder, ExecuteHandlers handlerOption, bool suppressOperationCanceledException, CancellationToken token)
+		public FileCancellationSearcherBase(string folder, ExecuteHandlers handlerOption, bool allowOperationCanceledException, CancellationToken token)
 			: base(folder, handlerOption)
 		{
 			Token = token;
-			SuppressOperationCanceledException = suppressOperationCanceledException;
+			AllowOperationCanceledException = allowOperationCanceledException;
 		}
 
 		protected override void GetFilesFast() /* .WithCancellation(Token) */
@@ -45,7 +45,7 @@ namespace FastSearchLibrary
 			{
 				OnSearchCompleted(true); // isCanceled == true
 
-				if (!SuppressOperationCanceledException) Token.ThrowIfCancellationRequested();
+				if (AllowOperationCanceledException) Token.ThrowIfCancellationRequested();
 
 				return;
 			}

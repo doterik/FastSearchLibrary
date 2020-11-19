@@ -17,7 +17,7 @@ namespace FastSearchLibrary
 
 		private readonly CancellationTokenSource tokenSource;
 
-		private readonly bool suppressOperationCanceledException;
+		private readonly bool allowOperationCanceledException;
 
 		/// <summary>
 		/// Event fires when next portion of files is found. Event handlers are not thread safe. 
@@ -83,18 +83,18 @@ namespace FastSearchLibrary
 		/// <param name="folders">Start search directories.</param>
 		/// <param name="pattern">The search pattern.</param>
 		/// <param name="handlerOption">Specifies where FilesFound event handlers are executed.</param>
-		/// <param name="suppressOperationCanceledException">Determines whether necessary suppress OperationCanceledException if it possible.</param>
+		/// <param name="allowOperationCanceledException">Determines whether necessary suppress OperationCanceledException if it possible.</param>
 		/// <param name="tokenSource">Instance of CancellationTokenSource for search process cancellation possibility.</param>
 		/// <exception cref="ArgumentException"></exception>
 		/// <exception cref="ArgumentNullException"></exception>
-		public FileSearcherMultiple(List<string> folders, string pattern, ExecuteHandlers handlerOption, bool suppressOperationCanceledException, CancellationTokenSource tokenSource)
+		public FileSearcherMultiple(List<string> folders, string pattern, ExecuteHandlers handlerOption, bool allowOperationCanceledException, CancellationTokenSource tokenSource)
 		{
 			CheckFolders(folders);
 			CheckPattern(pattern);
 			CheckTokenSource(tokenSource);
 			searchers = new List<FileSearcherBase>();
 
-			this.suppressOperationCanceledException = suppressOperationCanceledException;
+			this.allowOperationCanceledException = allowOperationCanceledException;
 
 			foreach (var folder in folders)
 			{
@@ -137,18 +137,18 @@ namespace FastSearchLibrary
 		/// <param name="folders">Start search directories.</param>
 		/// <param name="isValid">The delegate that determines algorithm of file selection.</param>
 		/// <param name="handlerOption">Specifies where FilesFound event handlers are executed.</param>
-		/// <param name="suppressOperationCanceledException">Determines whether necessary suppress OperationCanceledException if it possible.</param>
+		/// <param name="allowOperationCanceledException">Determines whether necessary suppress OperationCanceledException if it possible.</param>
 		/// <param name="tokenSource">Instance of CancellationTokenSource for search process cancellation possibility.</param>
 		/// <exception cref="ArgumentException"></exception>
 		/// <exception cref="ArgumentNullException"></exception>
-		public FileSearcherMultiple(List<string> folders, Func<FileInfo, bool> isValid, ExecuteHandlers handlerOption, bool suppressOperationCanceledException, CancellationTokenSource tokenSource)
+		public FileSearcherMultiple(List<string> folders, Func<FileInfo, bool> isValid, ExecuteHandlers handlerOption, bool allowOperationCanceledException, CancellationTokenSource tokenSource)
 		{
 			CheckFolders(folders);
 			CheckDelegate(isValid);
 			CheckTokenSource(tokenSource);
 			searchers = new List<FileSearcherBase>();
 
-			this.suppressOperationCanceledException = suppressOperationCanceledException;
+			this.allowOperationCanceledException = allowOperationCanceledException;
 
 			foreach (var folder in folders)
 			{
@@ -172,7 +172,7 @@ namespace FastSearchLibrary
 			catch (OperationCanceledException)
 			{
 				OnSearchCompleted(true);
-				if (!suppressOperationCanceledException) throw;
+				if (allowOperationCanceledException) throw;
 				return;
 			}
 

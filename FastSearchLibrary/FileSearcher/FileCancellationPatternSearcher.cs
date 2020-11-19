@@ -12,8 +12,8 @@ namespace FastSearchLibrary
 	{
 		//private readonly string pattern;
 
-		public FileCancellationPatternSearcher(string folder, string pattern, ExecuteHandlers handlerOption, bool suppressOperationCanceledException, CancellationToken token)
-			: base(folder, handlerOption, suppressOperationCanceledException, token)
+		public FileCancellationPatternSearcher(string folder, string pattern, ExecuteHandlers handlerOption, bool allowOperationCanceledException, CancellationToken token)
+			: base(folder, handlerOption, allowOperationCanceledException, token)
 		{
 			Pattern = pattern;
 		}

@@ -10,25 +10,25 @@ using System.Threading.Tasks;
 
 namespace FastSearchLibrary
 {
-	public abstract class DirectoryCancellationSearcherBase
+	internal abstract class DirectoryCancellationSearcherBase
 	{
 		/// <summary>
 		/// Determines where execute event DirectoriesFound handlers
 		/// </summary>
 		protected ExecuteHandlers HandlerOption { get; }
 		private string Folder { get; }
-		protected bool SuppressOperationCanceledException { get; }
+		protected bool AllowOperationCanceledException { get; }
 		protected CancellationToken Token { get; }
 		private ConcurrentBag<Task> TaskHandlers { get; }
 
 		protected string Pattern { get; set; } = string.Empty;     // DirectoryCancellationPatternSearcher
 		protected Func<DirectoryInfo, bool>? IsValid { get; set; } // DirectoryCancellationDelegateSearcher
 
-		protected DirectoryCancellationSearcherBase(string folder, ExecuteHandlers handlerOption, bool suppressOperationCanceledException, CancellationToken token)
+		protected DirectoryCancellationSearcherBase(string folder, ExecuteHandlers handlerOption, bool allowOperationCanceledException, CancellationToken token)
 		{
 			Folder = folder;
 			HandlerOption = handlerOption;
-			SuppressOperationCanceledException = suppressOperationCanceledException;
+			AllowOperationCanceledException = allowOperationCanceledException;
 			Token = token;
 			TaskHandlers = new ConcurrentBag<Task>();
 		}
@@ -85,7 +85,7 @@ namespace FastSearchLibrary
 			{
 				OnSearchCompleted(true); // isCanceled == true
 
-				if (!SuppressOperationCanceledException) Token.ThrowIfCancellationRequested();
+				if (AllowOperationCanceledException) Token.ThrowIfCancellationRequested();
 
 				return;
 			}
