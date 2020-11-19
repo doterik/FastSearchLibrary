@@ -1,4 +1,5 @@
-﻿#pragma warning disable IDE0021 // Use expression body for constructors
+﻿#pragma warning disable CA1068 // CancellationToken parameters must come last
+#pragma warning disable IDE0021 // Use expression body for constructors
 
 using System;
 using System.IO;
@@ -8,13 +9,13 @@ namespace FastSearchLibrary
 {
 	internal class DirectoryCancellationSearcher : DirectoryCancellationSearcherBase
 	{
-		public DirectoryCancellationSearcher(string folder, string pattern, ExecuteHandlers handlerOption, bool allowOperationCanceledException, CancellationToken token)
-			: base(folder, handlerOption, allowOperationCanceledException, token)
+		internal DirectoryCancellationSearcher(string folder, string pattern, CancellationToken token, ExecuteHandlers handlerOption, bool allowOperationCanceledException)
+			: base(folder, token, handlerOption, allowOperationCanceledException)
 		{
 			Pattern = pattern;
 		}
-		public DirectoryCancellationSearcher(string folder, Func<DirectoryInfo, bool> isValid, ExecuteHandlers handlerOption, bool allowOperationCanceledException, CancellationToken token)
-			: base(folder, handlerOption, allowOperationCanceledException, token)
+		internal DirectoryCancellationSearcher(string folder, Func<DirectoryInfo, bool> isValid, CancellationToken token, ExecuteHandlers handlerOption, bool allowOperationCanceledException)
+			: base(folder, token, handlerOption, allowOperationCanceledException)
 		{
 			IsValid = isValid;
 		}

@@ -60,7 +60,7 @@ namespace FastSearchLibrary
 			CheckPattern(pattern);
 			CheckTokenSource(tokenSource);
 
-			searcher = new DirectoryCancellationPatternSearcher(folder, pattern, handlerOption, allowOperationCanceledException, tokenSource.Token);
+			searcher = new DirectoryCancellationSearcher(folder, pattern, tokenSource.Token, handlerOption, allowOperationCanceledException);
 			this.tokenSource = tokenSource;
 		}
 
@@ -87,7 +87,7 @@ namespace FastSearchLibrary
 			CheckDelegate(isValid);
 			CheckTokenSource(tokenSource);
 
-			searcher = new DirectoryCancellationDelegateSearcher(folder, isValid, handlerOption, allowOperationCanceledException, tokenSource.Token);
+			searcher = new DirectoryCancellationSearcher(folder, isValid, tokenSource.Token, handlerOption, allowOperationCanceledException);
 			this.tokenSource = tokenSource;
 		}
 

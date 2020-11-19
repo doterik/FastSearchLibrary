@@ -24,7 +24,7 @@ namespace FastSearchLibrary
 		protected string Pattern { get; set; } = string.Empty;     // DirectoryCancellationPatternSearcher
 		protected Func<DirectoryInfo, bool>? IsValid { get; set; } // DirectoryCancellationDelegateSearcher
 
-		protected DirectoryCancellationSearcherBase(string folder, ExecuteHandlers handlerOption, bool allowOperationCanceledException, CancellationToken token)
+		protected DirectoryCancellationSearcherBase(string folder, CancellationToken token, ExecuteHandlers handlerOption, bool allowOperationCanceledException)
 		{
 			Folder = folder;
 			HandlerOption = handlerOption;
