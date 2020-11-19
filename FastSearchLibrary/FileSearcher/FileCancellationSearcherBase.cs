@@ -11,7 +11,7 @@ namespace FastSearchLibrary
 {
 	internal abstract class FileCancellationSearcherBase : FileSearcherBase
 	{
-		protected CancellationToken Token { get; }
+		//protected CancellationToken Token { get; }
 		protected bool SuppressOperationCanceledException { get; }
 
 		public FileCancellationSearcherBase(string folder, ExecuteHandlers handlerOption, bool suppressOperationCanceledException, CancellationToken token)
@@ -32,89 +32,8 @@ namespace FastSearchLibrary
 			});
 		}
 
-//sync
-		protected override void GetFiles(string folder)
-		{
-			Token.ThrowIfCancellationRequested();
-
-			DirectoryInfo dirInfo;
-			DirectoryInfo[] directories;
-			try
-			{
-				dirInfo = new DirectoryInfo(folder);
-				directories = dirInfo.GetDirectories();
-
-				if (directories.Length == 0)
-				{
-					if (Pattern != string.Empty)
-					{
-						OnFilesFound(dirInfo.GetFiles(Pattern).ToList()); // 'pattern'
-					}
-					else if (IsValid != null)
-					{
-						OnFilesFound(dirInfo.GetFiles().Where(file => IsValid(file)).ToList()); // 'isValid'
-					}
-
-					return;
-				}
-			}
-			catch (UnauthorizedAccessException) { return; }
-			catch (PathTooLongException) { return; }
-			catch (DirectoryNotFoundException) { return; }
-
-			foreach (var d in directories)
-			{
-				Token.ThrowIfCancellationRequested();
-
-				GetFiles(d.FullName);
-			}
-
-			Token.ThrowIfCancellationRequested();
-
-			try
-			{
-				if (Pattern != string.Empty)
-				{
-					OnFilesFound(dirInfo.GetFiles(Pattern).ToList()); // 'pattern'
-				}
-				else if (IsValid != null)
-				{
-					OnFilesFound(dirInfo.GetFiles().Where(file => IsValid(file)).ToList()); // 'isValid'
-				}
-			}
-			catch (UnauthorizedAccessException) { }
-			catch (PathTooLongException) { }
-			catch (DirectoryNotFoundException) { }
-		}
-
-		protected override List<DirectoryInfo> GetStartDirectories(string folder)
-		{
-			Token.ThrowIfCancellationRequested();
-
-			DirectoryInfo[] directories;
-			try
-			{
-				var dirInfo = new DirectoryInfo(folder);
-				directories = dirInfo.GetDirectories();
-
-				if (Pattern != string.Empty)
-				{
-					OnFilesFound(dirInfo.GetFiles(Pattern).ToList()); // 'pattern'
-				}
-				else if (IsValid != null)
-				{
-					OnFilesFound(dirInfo.GetFiles().Where(file => IsValid(file)).ToList()); // 'isValid'
-				}
-
-				if (directories.Length > 1) return new List<DirectoryInfo>(directories);
-				if (directories.Length == 0) return new();
-			}
-			catch (UnauthorizedAccessException) { return new(); }
-			catch (PathTooLongException) { return new(); }
-			catch (DirectoryNotFoundException) { return new(); }
-
-			return GetStartDirectories(directories[0].FullName); // directories.Length == 1
-		}
+		//protected override void GetFiles(string folder)
+		//protected override List<DirectoryInfo> GetStartDirectories(string folder)
 
 		public override void StartSearch()
 		{

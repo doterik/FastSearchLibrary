@@ -5,6 +5,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace FastSearchLibrary
@@ -20,7 +21,7 @@ namespace FastSearchLibrary
 
 		private protected string Pattern { get; set; } = string.Empty; // FilePatternSearcher,  FileCancellationPatternSearcher
 		private protected Func<FileInfo, bool>? IsValid { get; set; }  // FileDelegateSearcher, FileCancellationDelegateSearcher
-//      protected CancellationToken Token { get; } // FileCancellationSearcherBase
+		private protected CancellationToken Token { get; set; }        // FileCancellationSearcherBase
 
 		public FileSearcherBase(string folder, ExecuteHandlers handlerOption)
 		{
@@ -85,10 +86,9 @@ namespace FastSearchLibrary
 			SearchCompleted?.Invoke(this, new SearchCompletedEventArgs(isCanceled));
 		}
 
-//sync
 		protected virtual void GetFiles(string folder)
 		{
-//          Token.ThrowIfCancellationRequested();
+			if (Token.CanBeCanceled) Token.ThrowIfCancellationRequested();
 
 			DirectoryInfo dirInfo;
 			DirectoryInfo[] directories;
@@ -117,12 +117,12 @@ namespace FastSearchLibrary
 
 			foreach (var d in directories)
 			{
-//				Token.ThrowIfCancellationRequested();
+				if (Token.CanBeCanceled) Token.ThrowIfCancellationRequested();
 
 				GetFiles(d.FullName);
 			}
 
-//			Token.ThrowIfCancellationRequested();
+			if (Token.CanBeCanceled) Token.ThrowIfCancellationRequested();
 
 			try
 			{
@@ -142,7 +142,7 @@ namespace FastSearchLibrary
 
 		protected virtual List<DirectoryInfo> GetStartDirectories(string folder)
 		{
-//			Token.ThrowIfCancellationRequested();
+			if (Token.CanBeCanceled) Token.ThrowIfCancellationRequested();
 
 			DirectoryInfo[] directories;
 			try
