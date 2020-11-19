@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace FastSearchLibrary
 {
-	internal abstract class DirectoryCancellationSearcherBase
+	public abstract class DirectoryCancellationSearcherBase
 	{
 		/// <summary>
 		/// Determines where execute event DirectoriesFound handlers
@@ -21,10 +21,10 @@ namespace FastSearchLibrary
 		protected CancellationToken Token { get; }
 		private ConcurrentBag<Task> TaskHandlers { get; }
 
-		private protected string Pattern { get; set; } = string.Empty;     // DirectoryCancellationPatternSearcher
-		private protected Func<DirectoryInfo, bool>? IsValid { get; set; } // DirectoryCancellationDelegateSearcher
+		protected string Pattern { get; set; } = string.Empty;     // DirectoryCancellationPatternSearcher
+		protected Func<DirectoryInfo, bool>? IsValid { get; set; } // DirectoryCancellationDelegateSearcher
 
-		public DirectoryCancellationSearcherBase(string folder, ExecuteHandlers handlerOption, bool suppressOperationCanceledException, CancellationToken token)
+		protected DirectoryCancellationSearcherBase(string folder, ExecuteHandlers handlerOption, bool suppressOperationCanceledException, CancellationToken token)
 		{
 			Folder = folder;
 			HandlerOption = handlerOption;
