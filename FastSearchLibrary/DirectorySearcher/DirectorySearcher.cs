@@ -1,6 +1,4 @@
-﻿#pragma warning disable IDE0022 // Use expression body for methods
-
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
@@ -10,29 +8,24 @@ using System.Threading.Tasks;
 
 namespace FastSearchLibrary
 {
-	/// <summary>
-	/// Represents a class for fast directory search.
-	/// </summary>
+	/// <summary>Represents a class for fast directory search.</summary>
 	public class DirectorySearcher : FileBase
 	{
 		#region Instance members
 
 		private readonly DirectoryCancellationSearcherBase searcher;
-
 		private readonly CancellationTokenSource tokenSource;
 
-		/// <summary>
-		/// Event fires when next portion of directories is found. Event handlers are not thread safe. 
-		/// </summary>
+		/// <summary>Event fires when next portion of directories is found. Event handlers are not thread safe.</summary>
+
 		public event EventHandler<DirectoryEventArgs> DirectoriesFound
 		{
 			add { searcher.DirectoriesFound += value; }
 			remove { searcher.DirectoriesFound -= value; }
 		}
 
-		/// <summary>
-		/// Event fires when search process is completed or stopped.
-		/// </summary>
+		/// <summary>Event fires when search process is completed or stopped.</summary>
+
 		public event EventHandler<SearchCompletedEventArgs> SearchCompleted
 		{
 			add { searcher.SearchCompleted += value; }
@@ -41,50 +34,27 @@ namespace FastSearchLibrary
 
 		#region DirectoryCancellationPatternSearcher constructors
 
-		/// <summary>
-		/// Initialize a new instance of DirectorySearch class. 
-		/// </summary>
+		/// <summary>Initializes a new instance of the <see cref="DirectorySearcher"/> class.</summary>
 		/// <param name="folder">The start search directory.</param>
-		/// <param name="tokenSource">Instance of CancellationTokenSource for search process cancellation possibility.</param>
-		/// <exception cref="ArgumentException"></exception>
+		/// <param name="tokenSource">Instance of <see cref="CancellationTokenSource"/> for search process cancellation possibility.</param>
 		/// <exception cref="ArgumentNullException"></exception>
-		public DirectorySearcher(string folder, CancellationTokenSource tokenSource)
-			: this(folder, "*", ExecuteHandlers.InCurrentTask, false, tokenSource) { }
+		/// <exception cref="ArgumentException"></exception>
+		public DirectorySearcher(string folder, CancellationTokenSource tokenSource) : this(folder, "*", tokenSource) { }
 
-		/// <summary>
-		/// Initialize a new instance of DirectorySearch class. 
-		/// </summary>
+		/// <summary>Initializes a new instance of the <see cref="DirectorySearcher"/> class.</summary>
 		/// <param name="folder">The start search directory.</param>
 		/// <param name="pattern">The search pattern.</param>
-		/// <param name="tokenSource">Instance of CancellationTokenSource for search process cancellation possibility.</param>
-		/// <exception cref="ArgumentException"></exception>
-		/// <exception cref="ArgumentNullException"></exception>
-		public DirectorySearcher(string folder, string pattern, CancellationTokenSource tokenSource)
-			: this(folder, pattern, ExecuteHandlers.InCurrentTask, false, tokenSource) { }
-
-		/// <summary>
-		/// Initialize a new instance of DirectorySearch class. 
-		/// </summary>
-		/// <param name="folder">The start search directory.</param>
-		/// <param name="pattern">The search pattern.</param>
+		/// <param name="tokenSource">Instance of <see cref="CancellationTokenSource"/> for search process cancellation possibility.</param>
 		/// <param name="handlerOption">Specifies where DirectoriesFound event handlers are executed.</param>
-		/// <param name="tokenSource">Instance of CancellationTokenSource for search process cancellation possibility.</param>
-		/// <exception cref="ArgumentException"></exception>
+		/// <param name="allowOperationCanceledException">if set to <c>true</c> [allow operation canceled exception].</param>
 		/// <exception cref="ArgumentNullException"></exception>
-		public DirectorySearcher(string folder, string pattern, ExecuteHandlers handlerOption, CancellationTokenSource tokenSource)
-			: this(folder, pattern, handlerOption, false, tokenSource) { }
-
-		/// <summary>
-		/// Initialize a new instance of DirectorySearch class. 
-		/// </summary>
-		/// <param name="folder">The start search directory.</param>
-		/// <param name="pattern">The search pattern.</param>
-		/// <param name="handlerOption">Specifies where DirectoriesFound event handlers are executed.</param>
-		/// <param name="allowOperationCanceledException">Determines whether necessary suppress OperationCanceledException if it possible.</param>
-		/// <param name="tokenSource">Instance of CancellationTokenSource for search process cancellation possibility.</param>
 		/// <exception cref="ArgumentException"></exception>
-		/// <exception cref="ArgumentNullException"></exception>
-		public DirectorySearcher(string folder, string pattern, ExecuteHandlers handlerOption, bool allowOperationCanceledException, CancellationTokenSource tokenSource)
+		public DirectorySearcher(
+			string folder,
+			string pattern,
+			CancellationTokenSource tokenSource,
+			ExecuteHandlers handlerOption = ExecuteHandlers.InCurrentTask,
+			bool allowOperationCanceledException = false)
 		{
 			CheckFolder(folder);
 			CheckPattern(pattern);
@@ -96,42 +66,22 @@ namespace FastSearchLibrary
 
 		#endregion
 
-		#region DirectoryCancellationDelegateSearcher constructors
+		#region DirectoryCancellationDelegateSearcher constructor
 
-		/// <summary>
-		/// Initialize a new instance of DirectorySearch class.
-		/// </summary>
+		/// <summary>Initializes a new instance of the <see cref="DirectorySearcher"/> class.</summary>
 		/// <param name="folder">The start search directory.</param>
 		/// <param name="isValid">The delegate that determines algorithm of directory selection.</param>
-		/// <param name="tokenSource">Instance of CancellationTokenSource for search process cancellation possibility.</param>
-		/// <exception cref="ArgumentException"></exception>
-		/// <exception cref="ArgumentNullException"></exception>
-		public DirectorySearcher(string folder, Func<DirectoryInfo, bool> isValid, CancellationTokenSource tokenSource)
-			: this(folder, isValid, ExecuteHandlers.InCurrentTask, true, tokenSource) { }
-
-		/// <summary>
-		/// Initialize a new instance of DirectorySearch class.
-		/// </summary>
-		/// <param name="folder">The start search directory.</param>
-		/// <param name="isValid">The delegate that determines algorithm of directory selection.</param>
+		/// <param name="tokenSource">Instance of <see cref="CancellationTokenSource"/> for search process cancellation possibility.</param>
 		/// <param name="handlerOption">Specifies where DirectoriesFound event handlers are executed.</param>
-		/// <param name="tokenSource">Instance of CancellationTokenSource for search process cancellation possibility.</param>
-		/// <exception cref="ArgumentException"></exception>
+		/// <param name="allowOperationCanceledException">if set to <c>true</c> [allow operation canceled exception].</param>
 		/// <exception cref="ArgumentNullException"></exception>
-		public DirectorySearcher(string folder, Func<DirectoryInfo, bool> isValid, ExecuteHandlers handlerOption, CancellationTokenSource tokenSource)
-			: this(folder, isValid, ExecuteHandlers.InCurrentTask, true, tokenSource)		{		}
-
-		/// <summary>
-		/// Initialize a new instance of DirectorySearch class.
-		/// </summary>
-		/// <param name="folder">The start search directory.</param>
-		/// <param name="isValid">The delegate that determines algorithm of directory selection.</param>
-		/// <param name="handlerOption">Specifies where DirectoriesFound event handlers are executed.</param>
-		/// <param name="allowOperationCanceledException">Determines whether necessary suppress OperationCanceledException if it possible.</param>
-		/// <param name="tokenSource">Instance of CancellationTokenSource for search process cancellation possibility.</param>
 		/// <exception cref="ArgumentException"></exception>
-		/// <exception cref="ArgumentNullException"></exception>
-		public DirectorySearcher(string folder, Func<DirectoryInfo, bool> isValid, ExecuteHandlers handlerOption, bool allowOperationCanceledException, CancellationTokenSource tokenSource)
+		public DirectorySearcher(
+			string folder,
+			Func<DirectoryInfo, bool> isValid,
+			CancellationTokenSource tokenSource,
+			ExecuteHandlers handlerOption = ExecuteHandlers.InCurrentTask,
+			bool allowOperationCanceledException = false)
 		{
 			CheckFolder(folder);
 			CheckDelegate(isValid);
@@ -143,38 +93,26 @@ namespace FastSearchLibrary
 
 		#endregion
 
-		/// <summary>
-		/// Starts a directory search operation with realtime reporting using several threads in thread pool.
-		/// </summary>
+		/// <summary>Starts a directory search operation with realtime reporting using several threads in thread pool.</summary>
 		public void StartSearch() => searcher.StartSearch();
 
+		/// <summary>Starts a directory search operation with realtime reporting using several threads in thread pool as an asynchronous operation.</summary>
+		public Task StartSearchAsync() => Task.Run(() => StartSearch(), tokenSource.Token);
 
-		/// <summary>
-		/// Starts a directory search operation with realtime reporting using several threads in thread pool as an asynchronous operation.
-		/// </summary>
-		public Task StartSearchAsync()
-		{
-			return Task.Run(() => StartSearch(), tokenSource.Token);
-		}
-
-		/// <summary>
-		/// Stops a directory search operation.
-		/// </summary>
+		/// <summary>Stops a directory search operation.</summary>
 		public void StopSearch() => tokenSource.Cancel();
 
 		#endregion
 
 		#region Public members
 
-		/// <summary>
-		/// Returns a list of directories that are contained in directory and all subdirectories.
-		/// </summary>
+		/// <summary>Returns a list of directories that are contained in directory and all subdirectories.</summary>
 		/// <param name="folder">The start search directory.</param>
 		/// <param name="pattern">The search pattern.</param>
 		/// <returns>List of finding directories.</returns>
-		/// <exception cref="DirectoryNotFoundException"></exception>
 		/// <exception cref="ArgumentNullException"></exception>
 		/// <exception cref="ArgumentException"></exception>
+		/// <exception cref="DirectoryNotFoundException"></exception>
 		/// <exception cref="NotSupportedException"></exception>
 		public static List<DirectoryInfo> GetDirectories(string folder, string pattern = "*")
 		{
@@ -184,15 +122,13 @@ namespace FastSearchLibrary
 			return directories;
 		}
 
-		/// <summary>
-		/// Returns a list of directories that are contained in directory and all subdirectories.
-		/// </summary>
+		/// <summary>Returns a list of directories that are contained in directory and all subdirectories.</summary>
 		/// <param name="folder">The start search directory.</param>
 		/// <param name="isValid">The delegate that determines algorithm of directory selection.</param>
 		/// <returns>List of finding directories.</returns>
-		/// <exception cref="DirectoryNotFoundException"></exception>
 		/// <exception cref="ArgumentNullException"></exception>
 		/// <exception cref="NullReferenceException"></exception>
+		/// <exception cref="DirectoryNotFoundException"></exception>
 		/// <exception cref="NotSupportedException"></exception>
 		public static List<DirectoryInfo> GetDirectories(string folder, Func<DirectoryInfo, bool> isValid)
 		{
@@ -202,39 +138,33 @@ namespace FastSearchLibrary
 			return directories;
 		}
 
-		/// <summary>
-		/// Returns a list of directories that are contained in directory and all subdirectories as an asynchronous operation.
-		/// </summary>
+		/// <summary>Returns a list of directories that are contained in directory and all subdirectories as an asynchronous operation.</summary>
 		/// <param name="folder">The start search directory.</param>
 		/// <param name="pattern">The search pattern.</param>
-		/// <exception cref="DirectoryNotFoundException"></exception>
 		/// <exception cref="ArgumentNullException"></exception>
 		/// <exception cref="ArgumentException"></exception>
+		/// <exception cref="DirectoryNotFoundException"></exception>
 		/// <exception cref="NotSupportedException"></exception>
-		public static Task<List<DirectoryInfo>> GetDirectoriesAsync(string folder, string pattern = "*") =>
-			Task.Run(() => GetDirectories(folder, pattern));
+		public static Task<List<DirectoryInfo>> GetDirectoriesAsync(string folder, string pattern = "*")
+			=> Task.Run(() => GetDirectories(folder, pattern));
 
-		/// <summary>
-		/// Returns a list of directories that are contained in directory and all subdirectories as an asynchronous operation.
-		/// </summary>
+		/// <summary>Returns a list of directories that are contained in directory and all subdirectories as an asynchronous operation.</summary>
 		/// <param name="folder">The start search directory.</param>
 		/// <param name="isValid">The delegate that determines algorithm of directory selection.</param>
-		/// <exception cref="DirectoryNotFoundException"></exception>
 		/// <exception cref="ArgumentNullException"></exception>
 		/// <exception cref="NullReferenceException"></exception>
+		/// <exception cref="DirectoryNotFoundException"></exception>
 		/// <exception cref="NotSupportedException"></exception>
-		public static Task<List<DirectoryInfo>> GetDirectoriesAsync(string folder, Func<DirectoryInfo, bool> isValid) =>
-			Task.Run(() => GetDirectories(folder, isValid));
+		public static Task<List<DirectoryInfo>> GetDirectoriesAsync(string folder, Func<DirectoryInfo, bool> isValid)
+			=> Task.Run(() => GetDirectories(folder, isValid));
 
-		/// <summary>
-		/// Returns a list of directories that are contained in directory and all subdirectories using several threads in thread pool.
-		/// </summary>
+		/// <summary>Returns a list of directories that are contained in directory and all subdirectories using several threads in thread pool.</summary>
 		/// <param name="folder">The start search directory.</param>
 		/// <param name="pattern">The search pattern.</param>
 		/// <returns>List of finding directories.</returns>
-		/// <exception cref="DirectoryNotFoundException"></exception>
 		/// <exception cref="ArgumentNullException"></exception>
 		/// <exception cref="ArgumentException"></exception>
+		/// <exception cref="DirectoryNotFoundException"></exception>
 		/// <exception cref="NotSupportedException"></exception>
 		public static List<DirectoryInfo> GetDirectoriesFast(string folder, string pattern = "*")
 		{
@@ -244,22 +174,20 @@ namespace FastSearchLibrary
 			{
 				GetStartDirectories(d1.FullName, dirs, pattern).AsParallel().ForAll((d2) =>
 				{
-					GetDirectories(d2.FullName, pattern).ForEach((r) => dirs.Add(r));
+					GetDirectories(d2.FullName, pattern).ForEach((d) => dirs.Add(d));
 				});
 			});
 
 			return dirs.ToList();
 		}
 
-		/// <summary>
-		/// Returns a list of directories that are contained in directory and all subdirectories using several threads in thread pool.
-		/// </summary>
+		/// <summary>Returns a list of directories that are contained in directory and all subdirectories using several threads in thread pool.</summary>
 		/// <param name="folder">The start search directory.</param>
 		/// <param name="isValid">The delegate that determines algorithm of directory selection.</param>
 		/// <returns>List of finding directories.</returns>
-		/// <exception cref="DirectoryNotFoundException"></exception>
 		/// <exception cref="ArgumentNullException"></exception>
 		/// <exception cref="NullReferenceException"></exception>
+		/// <exception cref="DirectoryNotFoundException"></exception>
 		/// <exception cref="NotSupportedException"></exception>
 		public static List<DirectoryInfo> GetDirectoriesFast(string folder, Func<DirectoryInfo, bool> isValid)
 		{
@@ -269,36 +197,32 @@ namespace FastSearchLibrary
 			{
 				GetStartDirectories(d1.FullName, dirs, isValid).AsParallel().ForAll((d2) =>
 				{
-					GetDirectories(d2.FullName, isValid).ForEach((r) => dirs.Add(r));
+					GetDirectories(d2.FullName, isValid).ForEach((d) => dirs.Add(d));
 				});
 			});
 
 			return dirs.ToList();
 		}
 
-		/// <summary>
-		/// Returns a list of directories that are contained in directory and all subdirectories using several threads in thread pool as an asynchronous operation.
-		/// </summary>
+		/// <summary>Returns a list of directories that are contained in directory and all subdirectories using several threads in thread pool as an asynchronous operation.</summary>
 		/// <param name="folder">The start search directory.</param>
 		/// <param name="pattern">The search pattern.</param>
 		/// <exception cref="DirectoryNotFoundException"></exception>
 		/// <exception cref="ArgumentNullException"></exception>
 		/// <exception cref="ArgumentException"></exception>
 		/// <exception cref="NotSupportedException"></exception>
-		public static Task<List<DirectoryInfo>> GetDirectoriesFastAsync(string folder, string pattern = "*") =>
-			Task.Run(() => GetDirectoriesFast(folder, pattern));
+		public static Task<List<DirectoryInfo>> GetDirectoriesFastAsync(string folder, string pattern = "*")
+			=> Task.Run(() => GetDirectoriesFast(folder, pattern));
 
-		/// <summary>
-		/// Returns a list of directories that are contained in directory and all subdirectories using several threads in thread pool as an asynchronous operation.
-		/// </summary>
+		/// <summary>Returns a list of directories that are contained in directory and all subdirectories using several threads in thread pool as an asynchronous operation.</summary>
 		/// <param name="folder">The start search directory.</param>
 		/// <param name="isValid">The delegate that determines algorithm of directory selection.</param>
-		/// <exception cref="DirectoryNotFoundException"></exception>
 		/// <exception cref="ArgumentNullException"></exception>
 		/// <exception cref="NullReferenceException"></exception>
+		/// <exception cref="DirectoryNotFoundException"></exception>
 		/// <exception cref="NotSupportedException"></exception>
-		public static Task<List<DirectoryInfo>> GetDirectoriesFastAsync(string folder, Func<DirectoryInfo, bool> isValid) =>
-			Task.Run(() => GetDirectoriesFast(folder, isValid));
+		public static Task<List<DirectoryInfo>> GetDirectoriesFastAsync(string folder, Func<DirectoryInfo, bool> isValid)
+			=> Task.Run(() => GetDirectoriesFast(folder, isValid));
 
 		#endregion
 
@@ -347,10 +271,7 @@ namespace FastSearchLibrary
 
 			try
 			{
-				Array.ForEach(dirInfo.GetDirectories(), (d) =>
-				{
-					if (isValid(d)) result.Add(d);
-				});
+				Array.ForEach(dirInfo.GetDirectories(), (d) => { if (isValid(d)) result.Add(d); });
 			}
 			catch (UnauthorizedAccessException) { }
 			catch (PathTooLongException) { }
@@ -396,10 +317,7 @@ namespace FastSearchLibrary
 
 				if (directories.Length > 1)
 				{
-					Array.ForEach(directories, (d) =>
-					{
-						if (isValid(d)) dirs.Add(d);
-					});
+					Array.ForEach(directories, (d) => { if (isValid(d)) dirs.Add(d); });
 
 					return new List<DirectoryInfo>(directories);
 				}
@@ -412,10 +330,7 @@ namespace FastSearchLibrary
 			catch (DirectoryNotFoundException) { return new List<DirectoryInfo>(); }
 
 			// if directories.Length == 1
-			Array.ForEach(directories, (d) =>
-			{
-				if (isValid(d)) dirs.Add(d);
-			});
+			Array.ForEach(directories, (d) => { if (isValid(d)) dirs.Add(d); });
 
 			return GetStartDirectories(directories[0].FullName, dirs, isValid);
 		}
