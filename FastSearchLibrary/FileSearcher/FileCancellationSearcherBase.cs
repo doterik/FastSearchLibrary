@@ -1,4 +1,5 @@
-﻿#pragma warning disable IDE0022 // Use expression body for methods
+﻿#pragma warning disable CA1068 // CancellationToken parameters must come last
+#pragma warning disable IDE0022 // Use expression body for methods
 
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace FastSearchLibrary
 		//protected CancellationToken Token { get; }
 		protected bool AllowOperationCanceledException { get; }
 
-		public FileCancellationSearcherBase(string folder, ExecuteHandlers handlerOption, bool allowOperationCanceledException, CancellationToken token)
+		public FileCancellationSearcherBase(string folder, CancellationToken token, ExecuteHandlers handlerOption, bool allowOperationCanceledException)
 			: base(folder, handlerOption)
 		{
 			Token = token;

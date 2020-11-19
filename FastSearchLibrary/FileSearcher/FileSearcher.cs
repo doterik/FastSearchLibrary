@@ -14,86 +14,56 @@ namespace FastSearchLibrary
 		#region Instance members
 
 		private readonly FileSearcherBase searcher;
-
 		private readonly CancellationTokenSource? tokenSource;
 
-		/// <summary>
-		/// Event fires when next portion of files is found. Event handlers are not thread safe.
-		/// </summary>
+		/// <summary>Event fires when next portion of files is found. Event handlers are not thread safe.</summary>
+
 		public event EventHandler<FileEventArgs> FilesFound
 		{
 			add { searcher.FilesFound += value; }
 			remove { searcher.FilesFound -= value; }
 		}
 
-		/// <summary>
-		/// Event fires when search process is completed or stopped. 
-		/// </summary>
+		/// <summary>Event fires when search process is completed or stopped.</summary>
+
 		public event EventHandler<SearchCompletedEventArgs> SearchCompleted
 		{
 			add { searcher.SearchCompleted += value; }
 			remove { searcher.SearchCompleted -= value; }
 		}
 
-		#region FilePatternSearcher constructors 
+		#region FilePatternSearcher constructor
 
-		/// <summary>
-		/// Initializes a new instance of FileSearcher class.
-		/// </summary>
-		/// <param name="folder">The start search directory.</param>
-		/// <exception cref="ArgumentException"></exception>
-		/// <exception cref="ArgumentNullException"></exception>
-		public FileSearcher(string folder) : this(folder, "*", ExecuteHandlers.InCurrentTask) { }
-
-		/// <summary>
-		/// Initializes a new instance of FileSearcher class.
-		/// </summary>
-		/// <param name="folder">The start search directory.</param>
-		/// <param name="pattern">The search pattern.</param>
-		/// <exception cref="ArgumentException"></exception>
-		/// <exception cref="ArgumentNullException"></exception>
-		public FileSearcher(string folder, string pattern) : this(folder, pattern, ExecuteHandlers.InCurrentTask) { }
-
-		/// <summary>
-		/// Initializes a new instance of FileSearcher class.
-		/// </summary>
+		/// <summary>Initializes a new instance of the <see cref="FileSearcher" /> class.</summary>
 		/// <param name="folder">The start search directory.</param>
 		/// <param name="pattern">The search pattern.</param>
 		/// <param name="handlerOption">Specifies where FilesFound event handlers are executed.</param>
 		/// <exception cref="ArgumentException"></exception>
 		/// <exception cref="ArgumentNullException"></exception>
-		public FileSearcher(string folder, string pattern, ExecuteHandlers handlerOption)
+		public FileSearcher(string folder, string pattern = "*", ExecuteHandlers handlerOption = ExecuteHandlers.InCurrentTask)
 		{
 			CheckFolder(folder);
 			CheckPattern(pattern);
+
 			searcher = new FilePatternSearcher(folder, pattern, handlerOption);
 		}
 
 		#endregion
 
-		#region FileDelegateSearcher constructors
+		#region FileDelegateSearcher constructor
 
-		/// <summary>
-		/// Initializes a new instance of FileSearcher class.
-		/// </summary>
-		/// <param name="folder">The start search directory.</param>
-		/// <param name="isValid">The delegate that determines algorithm of file selection.</param>
-		/// <exception cref="ArgumentException"></exception>
-		/// <exception cref="ArgumentNullException"></exception>
-		public FileSearcher(string folder, Func<FileInfo, bool> isValid) : this(folder, isValid, ExecuteHandlers.InCurrentTask) { }
-
-		/// <summary>
-		/// Initializes a new instance of FileSearcher class.
-		/// </summary>
+		/// <summary>Initializes a new instance of the <see cref="FileSearcher" /> class.</summary>
 		/// <param name="folder">The start search directory.</param>
 		/// <param name="isValid">The delegate that determines algorithm of file selection.</param>
 		/// <param name="handlerOption">Specifies where FilesFound event handlers are executed.</param>
 		/// <exception cref="ArgumentException"></exception>
 		/// <exception cref="ArgumentNullException"></exception>
-		public FileSearcher(string folder, Func<FileInfo, bool> isValid, ExecuteHandlers handlerOption)
+
+		public FileSearcher(string folder, Func<FileInfo, bool> isValid, ExecuteHandlers handlerOption = ExecuteHandlers.InCurrentTask)
 		{
 			CheckFolder(folder);
 			CheckDelegate(isValid);
+
 			searcher = new FileDelegateSearcher(folder, isValid, handlerOption);
 		}
 
@@ -101,55 +71,33 @@ namespace FastSearchLibrary
 
 		#region FileCancellationPatternSearcher constructors
 
-		/// <summary>
-		/// Initializes a new instance of FileSearcher class.
-		/// </summary>
+		/// <summary>Initializes a new instance of the <see cref="FileSearcher"/> class.</summary>
 		/// <param name="folder">The start search directory.</param>
-		/// <param name="tokenSource">Instance of CancellationTokenSource for search process cancellation possibility.</param>
-		/// <exception cref="ArgumentException"></exception>
+		/// <param name="tokenSource">Instance of <see cref="CancellationTokenSource"/> for search process cancellation possibility.</param>
 		/// <exception cref="ArgumentNullException"></exception>
-		public FileSearcher(string folder, CancellationTokenSource tokenSource)
-			: this(folder, "*", ExecuteHandlers.InCurrentTask, true, tokenSource) { }
+		/// <exception cref="ArgumentException"></exception>
+		public FileSearcher(string folder, CancellationTokenSource tokenSource) : this(folder, "*", tokenSource) { }
 
-		/// <summary>
-		/// Initializes a new instance of FileSearcher class.
-		/// </summary>
+		/// <summary>Initializes a new instance of the <see cref="FileSearcher"/> class.</summary>
 		/// <param name="folder">The start search directory.</param>
 		/// <param name="pattern">The search pattern.</param>
-		/// <param name="tokenSource">Instance of CancellationTokenSource for search process cancellation possibility.</param>
-		/// <exception cref="ArgumentException"></exception>
+		/// <param name="tokenSource">Instance of <see cref="CancellationTokenSource"/> for search process cancellation possibility.</param>
+		/// <param name="handlerOption">Specifies where DirectoriesFound event handlers are executed.</param>
+		/// <param name="allowOperationCanceledException">if set to <c>true</c> [allow operation canceled exception].</param>
 		/// <exception cref="ArgumentNullException"></exception>
-		public FileSearcher(string folder, string pattern, CancellationTokenSource tokenSource)
-			: this(folder, pattern, ExecuteHandlers.InCurrentTask, true, tokenSource) { }
-
-		/// <summary>
-		/// Initializes a new instance of FileSearcher class.
-		/// </summary>
-		/// <param name="folder">The start search directory.</param>
-		/// <param name="pattern">The search pattern.</param>
-		/// <param name="handlerOption">Specifies where FilesFound event handlers are executed.</param>
-		/// <param name="tokenSource">Instance of CancellationTokenSource for search process cancellation possibility.</param>
 		/// <exception cref="ArgumentException"></exception>
-		/// <exception cref="ArgumentNullException"></exception>
-		public FileSearcher(string folder, string pattern, ExecuteHandlers handlerOption, CancellationTokenSource tokenSource)
-			: this(folder, pattern, handlerOption, true, tokenSource) { }
-
-		/// <summary>
-		/// Initializes a new instance of FileSearcher class.
-		/// </summary>
-		/// <param name="folder">The start search directory.</param>
-		/// <param name="pattern">The search pattern.</param>
-		/// <param name="handlerOption">Specifies where FilesFound event handlers are executed.</param>
-		/// <param name="allowOperationCanceledException">Determines whether necessary suppress OperationCanceledException if it possible.</param>
-		/// <param name="tokenSource">Instance of CancellationTokenSource for search process cancellation possibility.</param>
-		/// <exception cref="ArgumentException"></exception>
-		/// <exception cref="ArgumentNullException"></exception>
-		public FileSearcher(string folder, string pattern, ExecuteHandlers handlerOption, bool allowOperationCanceledException, CancellationTokenSource tokenSource)
+		public FileSearcher(
+			string folder,
+			string pattern,
+			CancellationTokenSource tokenSource,
+			ExecuteHandlers handlerOption = ExecuteHandlers.InCurrentTask,
+			bool allowOperationCanceledException = false)
 		{
 			CheckFolder(folder);
 			CheckPattern(pattern);
 			CheckTokenSource(tokenSource);
-			searcher = new FileCancellationPatternSearcher(folder, pattern, handlerOption, allowOperationCanceledException, tokenSource.Token);
+
+			searcher = new FileCancellationSearcher(folder, pattern, tokenSource.Token, handlerOption, allowOperationCanceledException);
 			this.tokenSource = tokenSource;
 		}
 
@@ -157,45 +105,29 @@ namespace FastSearchLibrary
 
 		#region FileCancellationDelegateSearcher constructors
 
-		/// <summary>
-		/// Initializes a new instance of FileSearcher class.
-		/// </summary>
-		/// <param name="folder">The start search directory.</param>
-		/// <param name="isValid">The delegate that determines algorithm of file selection.</param>
-		/// <param name="tokenSource">Instance of CancellationTokenSource for search process cancellation possibility.</param>
-		/// <exception cref="ArgumentException"></exception>
-		/// <exception cref="ArgumentNullException"></exception>
-		public FileSearcher(string folder, Func<FileInfo, bool> isValid, CancellationTokenSource tokenSource)
-			: this(folder, isValid, ExecuteHandlers.InCurrentTask, true, tokenSource) { }
-
-		/// <summary>
-		/// Initializes a new instance of FileSearcher class.
-		/// </summary>
-		/// <param name="folder">The start search directory.</param>
-		/// <param name="isValid">The delegate that determines algorithm of file selection.</param>
-		/// <param name="handlerOption">Specifies where FilesFound event handlers are executed.</param>
-		/// <param name="tokenSource">Instance of CancellationTokenSource for search process cancellation possibility.</param>
-		/// <exception cref="ArgumentException"></exception>
-		/// <exception cref="ArgumentNullException"></exception>
 		public FileSearcher(string folder, Func<FileInfo, bool> isValid, ExecuteHandlers handlerOption, CancellationTokenSource tokenSource)
-			: this(folder, isValid, handlerOption, true, tokenSource) { }
+			: this(folder, isValid, tokenSource, handlerOption, true) { }
 
-		/// <summary>
-		/// Initializes a new instance of FileSearcher class.
-		/// </summary>
+		/// <summary>Initializes a new instance of the <see cref="FileSearcher"/> class.</summary>
 		/// <param name="folder">The start search directory.</param>
 		/// <param name="isValid">The delegate that determines algorithm of file selection.</param>
-		/// <param name="handlerOption">Specifies where FilesFound event handlers are executed.</param>
-		/// <param name="allowOperationCanceledException">Determines whether necessary suppress OperationCanceledException if it possible.</param>
-		/// <param name="tokenSource">Instance of CancellationTokenSource for search process cancellation possibility.</param>
-		/// <exception cref="ArgumentException"></exception>
+		/// <param name="tokenSource">Instance of <see cref="CancellationTokenSource"/> for search process cancellation possibility.</param>
+		/// <param name="handlerOption">Specifies where DirectoriesFound event handlers are executed.</param>
+		/// <param name="allowOperationCanceledException">if set to <c>true</c> [allow operation canceled exception].</param>
 		/// <exception cref="ArgumentNullException"></exception>
-		public FileSearcher(string folder, Func<FileInfo, bool> isValid, ExecuteHandlers handlerOption, bool allowOperationCanceledException, CancellationTokenSource tokenSource)
+		/// <exception cref="ArgumentException"></exception>
+		public FileSearcher(
+			string folder,
+			Func<FileInfo, bool> isValid,
+			CancellationTokenSource tokenSource,
+			ExecuteHandlers handlerOption = ExecuteHandlers.InCurrentTask,
+			bool allowOperationCanceledException = false)
 		{
 			CheckFolder(folder);
 			CheckDelegate(isValid);
 			CheckTokenSource(tokenSource);
-			searcher = new FileCancellationDelegateSearcher(folder, isValid, handlerOption, allowOperationCanceledException, tokenSource.Token);
+
+			searcher = new FileCancellationSearcher(folder, isValid, tokenSource.Token, handlerOption, allowOperationCanceledException);
 			this.tokenSource = tokenSource;
 		}
 
