@@ -5,7 +5,8 @@ using System.Threading;
 
 namespace FastSearchLibrary
 {
-	public class FileBase
+	/// <summary>Static helper methods for <see cref="FastSearchLibrary"/></summary>
+	public class FastSearchBase
 	{
 		#region Checking methods
 		private protected static void CheckFolder(string folder)
