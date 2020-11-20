@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace FastSearchLibrary
 {
-	internal abstract class FileCancellationSearcherBase : FileSearcherBase
+	internal abstract class FileCancellationSearcherBase : FileCommonSearcherBase
 	{
 		//protected CancellationToken Token { get; }
 		protected bool AllowOperationCanceledException { get; }

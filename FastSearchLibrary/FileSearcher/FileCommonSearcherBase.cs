@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace FastSearchLibrary
 {
-	internal abstract class FileSearcherBase
+	internal abstract class FileCommonSearcherBase
 	{
 		/// <summary>
 		/// Specifies where FilesFound event handlers are executed.
@@ -19,11 +19,11 @@ namespace FastSearchLibrary
 		protected string Folder { get; }
 		protected ConcurrentBag<Task> TaskHandlers { get; }
 
-		private protected string Pattern { get; set; } = string.Empty; // FilePatternSearcher,  FileCancellationPatternSearcher
-		private protected Func<FileInfo, bool>? IsValid { get; set; }  // FileDelegateSearcher, FileCancellationDelegateSearcher
+		private protected string Pattern { get; set; } = string.Empty; // FileCommonSearcher, FileCancellationSearcher
+		private protected Func<FileInfo, bool>? IsValid { get; set; }  // FileCommonSearcher, FileCancellationSearcher
 		private protected CancellationToken Token { get; set; }        // FileCancellationSearcherBase
 
-		public FileSearcherBase(string folder, ExecuteHandlers handlerOption)
+		public FileCommonSearcherBase(string folder, ExecuteHandlers handlerOption)
 		{
 			Folder = folder;
 			HandlerOption = handlerOption;

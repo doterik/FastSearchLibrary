@@ -13,7 +13,7 @@ namespace FastSearchLibrary
 	{
 		#region Instance members
 
-		private readonly FileSearcherBase searcher;
+		private readonly FileCommonSearcherBase searcher;
 		private readonly CancellationTokenSource? tokenSource;
 
 		/// <summary>Event fires when next portion of files is found. Event handlers are not thread safe.</summary>
@@ -45,7 +45,7 @@ namespace FastSearchLibrary
 			CheckFolder(folder);
 			CheckPattern(pattern);
 
-			searcher = new FilePatternSearcher(folder, pattern, handlerOption);
+			searcher = new FileCommonSearcher(folder, pattern, handlerOption);
 		}
 
 		#endregion
@@ -64,7 +64,7 @@ namespace FastSearchLibrary
 			CheckFolder(folder);
 			CheckDelegate(isValid);
 
-			searcher = new FileDelegateSearcher(folder, isValid, handlerOption);
+			searcher = new FileCommonSearcher(folder, isValid, handlerOption);
 		}
 
 		#endregion

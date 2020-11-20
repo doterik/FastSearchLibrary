@@ -11,7 +11,7 @@ namespace FastSearchLibrary
 	/// <summary>Represents a class for fast file search in multiple directories.</summary>
 	public class FileSearcherMultiple : FileBase
 	{
-		private readonly List<FileSearcherBase> searchers;
+		private readonly List<FileCommonSearcherBase> searchers;
 		private readonly CancellationTokenSource tokenSource;
 		private readonly bool allowOperationCanceledException;
 
@@ -62,7 +62,7 @@ namespace FastSearchLibrary
 			CheckPattern(pattern);
 			CheckTokenSource(tokenSource);
 
-			searchers = new List<FileSearcherBase>();
+			searchers = new List<FileCommonSearcherBase>();
 			this.tokenSource = tokenSource;
 			this.allowOperationCanceledException = allowOperationCanceledException;
 
@@ -95,7 +95,7 @@ namespace FastSearchLibrary
 			CheckDelegate(isValid);
 			CheckTokenSource(tokenSource);
 
-			searchers = new List<FileSearcherBase>();
+			searchers = new List<FileCommonSearcherBase>();
 			this.tokenSource = tokenSource;
 			this.allowOperationCanceledException = allowOperationCanceledException;
 

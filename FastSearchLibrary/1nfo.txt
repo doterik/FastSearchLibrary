@@ -2,13 +2,11 @@
 x	FileEventArgs : EventArgs					FileEventArgs(List<FileInfo> files)
 
 
-x	FileSearcherBase
+x	FileCommonSearcherBase
 
-x1	FilePatternSearcher          : FileSearcherBase
+x2	FileCommonSearcher           : FileCommonSearcherBase (pattern, delegate)
 
-x1	FileDelegateSearcher         : FileSearcherBase
-
-x	FileCancellationSearcherBase : FileSearcherBase
+x	FileCancellationSearcherBase : FileCommonSearcherBase
 
 x2	FileCancellationSearcher     : FileCancellationSearcherBase (pattern, delegate)
 
